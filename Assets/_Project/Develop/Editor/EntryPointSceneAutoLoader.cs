@@ -10,7 +10,6 @@ namespace EditorSpace
     public static class EntryPointSceneAutoLoader
     {
         private const string ToggleMenuPath = "Tools/Entry Point Scene Auto Loader/Toggle";
-        private const string SetEntryMenuPath = "Tools/Entry Point Scene Auto Loader/Set Entry";
         private const string PrefKey = "EntryPointSceneAutoLoader.Enabled";
         
         public static bool Enabled { get; private set; }
