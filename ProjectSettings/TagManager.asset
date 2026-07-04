@@ -45,13 +45,13 @@ TagManager:
   - name: Canvas
     uniqueID: 1047478921
     locked: 0
-  - name: curtain
+  - name: Curtain
     uniqueID: 3461430917
     locked: 0
-  - name: buttons
+  - name: Buttons
     uniqueID: 4134203659
     locked: 0
-  - name: cursor
+  - name: Cursor
     uniqueID: 1679683841
     locked: 0
   m_RenderingLayers:

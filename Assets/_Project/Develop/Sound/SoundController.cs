@@ -1,5 +1,4 @@
 using _Project.Scripts.Sound.Handles;
-using _Project.Develop.G;
 using Cysharp.Threading.Tasks;
 using FMOD.Studio;
 using UnityEngine;
@@ -38,7 +37,8 @@ namespace _Project.Develop.Sound
         {
             // Master
             // _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");
-            // MasterVolume = PlayerPrefs.GetFloat("Master", 0.6f);
+            
+            MasterVolume = PlayerPrefs.GetFloat("Master", 0.6f);
             
             // I set ALL HANDLE here
             // MusicHandle.Initialize();
