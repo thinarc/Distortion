@@ -6,7 +6,7 @@ namespace _Project.Develop.Input
     {
         public PlayerInput Player { get; } = new();
 
-        public void Init()
+        public void Initialize()
         {
             Player.Enable();
         }

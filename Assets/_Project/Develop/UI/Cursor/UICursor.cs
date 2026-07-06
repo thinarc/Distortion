@@ -27,7 +27,7 @@ namespace _Project.Develop.UI.Cursor
             _cursorImage = GetComponentInChildren<Image>();
             
             _input = new CursorInput(this);
-            _input.Init();
+            _input.Initialize();
             
             SetState(CursorState.Idle);
             GetComponent<CanvasGroup>().alpha = 1;

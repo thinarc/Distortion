@@ -33,7 +33,7 @@ namespace _Project.Develop.Sound
         public ActionHandle ActionHandle { get; private set; } = new();
         public AnomalyHandle AnomalyHandle { get; private set; } = new();
         
-        public void Init()
+        public void Initialize()
         {
             // Master
             // _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");

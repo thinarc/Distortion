@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-namespace _Project.Develop.Menus
+namespace _Project.Develop.UI.Menus
 {
     public class MainMenu : MonoBehaviour
     {
@@ -50,6 +50,7 @@ namespace _Project.Develop.Menus
             creditsGroup.alpha = 0;
             creditsGroup.interactable = false;
             creditsGroup.blocksRaycasts = false;
+            creditsGroup.transform.localScale = new Vector3(0.8f, 0.8f, 0.8f);
             
             volumeSlider.value = G.Get<SoundController>().MasterVolume;
             ChooseVolumeHint();

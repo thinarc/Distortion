@@ -16,7 +16,7 @@ namespace _Project.Develop.UI.Cursor
             _cursor = cursor;
         }
 
-        public void Init()
+        public void Initialize()
         {
             var input = G.Get<InputController>();
             input.Player.Player.MousePosition.performed += OnMousePosition;

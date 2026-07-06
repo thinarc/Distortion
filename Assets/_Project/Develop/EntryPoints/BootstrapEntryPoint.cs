@@ -12,10 +12,10 @@ namespace _Project.Develop.EntryPoints
         private void Start()
         {
             _inputController = new InputController();
-            _inputController.Init();
+            _inputController.Initialize();
 
             var soundController = new SoundController();
-            soundController.Init();
+            soundController.Initialize();
             
             G.Reset();
             
