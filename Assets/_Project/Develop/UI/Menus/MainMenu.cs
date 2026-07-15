@@ -22,7 +22,7 @@ namespace _Project.Develop.UI.Menus
         [SerializeField, Space(5)] private CanvasGroup lightGroup;
         [SerializeField] private TextMeshProUGUI startText;
 
-        [SerializeField, Space(5)] private ParticleSystem rainParticle;
+        [SerializeField, Space(5)] private ParticleSystem rainParticles;
         
         private CanvasGroup _group;
         private InputController _input;
@@ -111,7 +111,7 @@ namespace _Project.Develop.UI.Menus
             
             if (pause)
             {
-                var main = rainParticle.main;
+                var main = rainParticles.main;
                 main.prewarm = true;
                 
                 creditsButton.gameObject.SetActive(false);
@@ -121,7 +121,7 @@ namespace _Project.Develop.UI.Menus
             }
             else _ = Tween.Alpha(lightGroup, endValue: 1f, duration: 1.4f, ease: Ease.InOutSine, useUnscaledTime: true);
              
-            rainParticle.gameObject.SetActive(true);
+            rainParticles.gameObject.SetActive(true);
         }
 
         public async UniTask ShowMenu()
@@ -144,7 +144,7 @@ namespace _Project.Develop.UI.Menus
             
             if (!pause) Tween.Alpha(lightGroup, endValue: 0, duration: 0.4f, ease: Ease.InOutSine, useUnscaledTime: true);
             
-            rainParticle.gameObject.SetActive(false);
+            rainParticles.gameObject.SetActive(false);
         }
         
         public void ShowCredits()

@@ -11,15 +11,16 @@ namespace _Project.Develop.EntryPoints
         
         private void Start()
         {
+            G.Reset();
+            
+            G.Register(new EventBus());
+            
             _inputController = new InputController();
             _inputController.Initialize();
+            G.Register(_inputController);
 
             var soundController = new SoundController();
             soundController.Initialize();
-            
-            G.Reset();
-            
-            G.Register(_inputController);
             G.Register(soundController);
 
             DontDestroyOnLoad(this);

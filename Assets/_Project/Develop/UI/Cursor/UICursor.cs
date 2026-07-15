@@ -30,7 +30,7 @@ namespace _Project.Develop.UI.Cursor
             _input.Initialize();
             
             SetState(CursorState.Idle);
-            GetComponent<CanvasGroup>().alpha = 1;
+            // GetComponent<CanvasGroup>().alpha = 1;
         }
 
         private void Update()

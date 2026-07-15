@@ -7,8 +7,6 @@ namespace _Project.Develop.Sound
 {
     public class SoundController : IService
     {
-        // Master
-        
         private float _masterVolume;
         public float MasterVolume
         {
@@ -24,23 +22,23 @@ namespace _Project.Develop.Sound
         
         private Bus _masterBus;
         
-        // Handles
-        
         public MusicHandle MusicHandle { get; private set; } = new();
+        
         public SFXHandle SfxHandle { get; private set; } = new();
+        
         public AmbientHandle AmbientHandle { get; private set; } = new();
+        
         public UIHandle UIHandle { get; private set; } = new();
+        
         public ActionHandle ActionHandle { get; private set; } = new();
+        
         public AnomalyHandle AnomalyHandle { get; private set; } = new();
         
         public void Initialize()
         {
-            // Master
             // _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");
-            
             MasterVolume = PlayerPrefs.GetFloat("Master", 0.6f);
             
-            // I set ALL HANDLE here
             // MusicHandle.Initialize();
             // SfxHandle.Initialize();
             // AmbientHandle.Initialize();
@@ -48,10 +46,8 @@ namespace _Project.Develop.Sound
             // ActionHandle.Initialize();
             // AnomalyHandle.Initialize();
             
-            // I set background music there
-            //MusicHandle.PlayPianoTheme();
+            // MusicHandle.PlayPianoTheme();
             
-            // сбросить на нормальные значения после инициализации
             // MusicHandle.SetLowPass(1f);
             // MusicHandle.SetVolume(1f);
             
@@ -63,7 +59,7 @@ namespace _Project.Develop.Sound
             while (true)
             {
                 ActionHandle.Tick();
-                await UniTask.NextFrame();
+                await UniTask.Yield();
             }
         }
     }

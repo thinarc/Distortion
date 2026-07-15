@@ -1,37 +1,40 @@
+using System;
 using System.Collections.Generic;
+using _Project.Develop.Switch.Scenes;
+using Cysharp.Threading.Tasks;
 
 namespace _Project.Develop.Switch
 {
     public class SwitchModel
     {
-        private Dictionary<string, BaseLocation> _locations = new();
-        private string _currentKey;
+        private readonly Dictionary<string, BaseLocation> _locations = new();
+        private BaseLocation _currentLocation;
 
-        private SwitchView _view;
+        private readonly SwitchView _view;
+        
+        public BaseLocation CurrentLocation => _currentLocation;
 
         public SwitchModel(SwitchView view)
         {
             _view = view;
         }
 
-        public void Initialize(string startLocation, BaseLocation[] locations)
+        public async UniTask Initialize(string startLocation, BaseLocation[] locations)
         {
-            foreach (var loc in locations)
+            foreach (var location in locations)
             {
-                var data = loc.GetData();
-                _locations.Add(data.config.key, data.location);
-                
-                data.location.Initialize();
+                _locations.Add(location.Config.key, location);
+                location.Initialize();
             }
             
-            GoToLocation(startLocation);
+            await GoToLocation(startLocation);
         }
         
-        public void GoToLocation(string key)
+        public async UniTask GoToLocation(string key)
         {
-            if (!_locations.TryGetValue(key, out var loc)) return;
-            _currentKey = key;
-            _view.ChangeLocation(loc);
+            if (!_locations.TryGetValue(key, out var location)) return;
+            await _view.ChangeLocation(current: _currentLocation, target: location);
+            _currentLocation = location;
         }
     }
 }
