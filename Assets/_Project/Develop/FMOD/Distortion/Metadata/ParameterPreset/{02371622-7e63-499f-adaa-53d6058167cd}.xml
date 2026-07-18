@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{02371622-7e63-499f-adaa-53d6058167cd}">
+		<property name="name">
+			<value>BeforeRumble</value>
+		</property>
+		<relationship name="folder">
+			<destination>{809d66d3-fb88-407d-8c25-0c88098cc78b}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{be26cbea-4115-4cfe-b1a9-b3aeae8d90b4}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{be26cbea-4115-4cfe-b1a9-b3aeae8d90b4}">
+		<property name="parameterType">
+			<value>1</value>
+		</property>
+		<property name="minimum">
+			<value>1</value>
+		</property>
+		<property name="maximum">
+			<value>4</value>
+		</property>
+		<property name="initialValue">
+			<value>1</value>
+		</property>
+		<property name="isExposedRecursively">
+			<value>false</value>
+		</property>
+	</object>
+</objects>
