@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="EncodableAsset" id="{a784030f-0683-4a26-87db-dec0671e586b}">
+		<property name="assetPath">
+			<value>SFX/SFXAction/Nag/</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{9522ad03-76ec-448d-8fdd-e3036d452f50}</destination>
+		</relationship>
+	</object>
+</objects>
