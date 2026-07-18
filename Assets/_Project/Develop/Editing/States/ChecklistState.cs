@@ -53,8 +53,6 @@ namespace _Project.Develop.Editing.States
                 await UniTask.Yield();
             }
             
-            await UniTask.Delay(500);
-            
             G.Get<EditController>().StateController.ChangeState(G.Get<EditController>().EditingState);
         }
 

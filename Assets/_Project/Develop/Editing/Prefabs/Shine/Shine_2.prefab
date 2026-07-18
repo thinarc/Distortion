@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4578735190059251145}
   - component: {fileID: 2263995934723831115}
   - component: {fileID: -7605320758174346895}
+  - component: {fileID: 1052523785861678767}
   m_Layer: 5
   m_Name: Shine_2
   m_TagString: Untagged
@@ -89,3 +90,29 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Project.Develop.Editing.Photo.EditingSpot
   spotType: 2
+--- !u!114 &1052523785861678767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7547030077524830982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b09feb26a7ab484f8aa4856f80ada433, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Project.Develop.UI.UIEffects
+  effects: 32
+  unscaledTime: 0
+  hoverScale: 1.1
+  pressScale: 0.9
+  scaleDuration: 0.15
+  tiltAmount: 8
+  moveAmount: 10
+  smoothSpeed: 12
+  floatDistance: 10
+  floatDuration: 1
+  breathingScale: 1.05
+  breathingDuration: 1
+  wobbleAngle: 3
+  wobbleDuration: 0.08

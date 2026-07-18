@@ -56,6 +56,8 @@ namespace _Project.Develop.Editing.States
         
         public async UniTask Enter()
         {
+            await UniTask.Delay(500);
+            
             _editView.PickPhoto(out var photo);
             
             SpawnSpots(photo.Image.rectTransform, out _targetShine);
@@ -78,8 +80,10 @@ namespace _Project.Develop.Editing.States
         
         private void SpawnSpots(RectTransform photoRect, out int targetShine)
         {
-            _spotsGroup.GetComponent<RectTransform>().sizeDelta = photoRect.sizeDelta;
+            ((RectTransform)_spotsGroup.transform.parent).sizeDelta = photoRect.sizeDelta;
+            
             _spotsGroup.transform.position = photoRect.position;
+            _spotsGroup.transform.rotation = Quaternion.identity;
             
             targetShine = Random.Range(MinTargetShine, MaxTargetShine + 1);
             _sprayTool.MaxShine = targetShine;

@@ -350,9 +350,9 @@ TextureImporter:
       name: "\u0413\u0420\u042F\u0417\u042C-\u041A\u041B\u042F\u0427\u0410-2_30"
       rect:
         serializedVersion: 2
-        x: 404
+        x: 534
         y: 0
-        width: 231
+        width: 101
         height: 152
       alignment: 0
       pivot: {x: 0.5, y: 0.5}

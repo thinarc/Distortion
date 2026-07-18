@@ -1,5 +1,6 @@
 using _Project.Develop.Editing.Photo;
 using _Project.Develop.Input;
+using _Project.Develop.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -13,6 +14,8 @@ namespace _Project.Develop.Editing.Tools
         
         private Image _image;
         private Canvas _canvas;
+
+        private UIEffects _effects;
         
         protected Canvas Canvas => _canvas;
         
@@ -22,6 +25,8 @@ namespace _Project.Develop.Editing.Tools
         {
             _image = GetComponent<Image>();
             _canvas = GetComponentInParent<Canvas>();
+            
+            _effects = GetComponent<UIEffects>();
 
             G.Get<InputController>().Player.Player.MousePosition.performed += OnMousePosition;
         }
@@ -48,6 +53,7 @@ namespace _Project.Develop.Editing.Tools
             Picked = true;
             
             transform.SetAsLastSibling();
+            _effects.enabled = false;
             
             G.Get<InputController>().Player.Player.Click.canceled += Drop;
         }
@@ -56,6 +62,8 @@ namespace _Project.Develop.Editing.Tools
         {
             _image.raycastTarget = true;
             Picked = false;
+            
+            _effects.enabled = true;
             
             G.Get<InputController>().Player.Player.Click.canceled -= Drop;
         }

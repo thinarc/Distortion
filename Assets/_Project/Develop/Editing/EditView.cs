@@ -76,6 +76,7 @@ namespace _Project.Develop.Editing
 
         public void ReturnPhoto(EditingPhoto photo)
         {
+            photo.Image.sprite = photo.FrontPhoto;
             _correctPhotos.Add(photo);
         }
     }

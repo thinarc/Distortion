@@ -8,6 +8,8 @@ namespace _Project.Develop.Editing.Photo
     {
         [SerializeField] private Sprite backdropPhoto;
         [SerializeField] private int number;
+
+        public Sprite FrontPhoto { get; private set; }
         
         public Sprite BackdropPhoto => backdropPhoto;
 
@@ -24,6 +26,8 @@ namespace _Project.Develop.Editing.Photo
                 return _image;
             }
         }
+
+        private void Start() => FrontPhoto = Image.sprite;
 
         public void OnPointerEnter(PointerEventData eventData) => G.Get<EventBus>().PhotoEnter?.Invoke();
         

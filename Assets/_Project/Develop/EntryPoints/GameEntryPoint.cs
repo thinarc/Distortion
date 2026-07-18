@@ -28,7 +28,7 @@ namespace _Project.Develop.EntryPoints
         {
             G.Register(cursor);
             
-            // await mainMenu.ShowMenu();
+            await mainMenu.ShowMenu();
             
             var curtain = new UICurtain(sides, globalLight);
             curtain.Initialize();

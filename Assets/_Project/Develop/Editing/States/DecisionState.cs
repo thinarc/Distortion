@@ -1,4 +1,5 @@
 using _Project.Develop.Editing.Photo;
+using _Project.Develop.UI;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace _Project.Develop.Editing.States
         private readonly EditView _editView;
 
         private EditingPhoto _photoToDecision;
+        private UIEffects _effects;
 
         private bool _firstEnter;
         
@@ -23,6 +25,7 @@ namespace _Project.Develop.Editing.States
         public DecisionState WithPhoto(EditingPhoto photoToDecision)
         {
             _photoToDecision = photoToDecision;
+            _effects ??= photoToDecision.GetComponentInParent<UIEffects>();
             return this;
         }
         
@@ -53,7 +56,7 @@ namespace _Project.Develop.Editing.States
             await Tween.UIAnchoredPosition(_photoToDecision.Image.rectTransform, anchorPos, duration: 0.9f, ease: Ease.InBack);
             await Tween.Alpha(_photoToDecision.Image, endValue: 0f, duration: 0.3f, ease: Ease.InBack);
             
-            _photoToDecision.gameObject.SetActive(false);
+            OnEndAnimate();
 
             if (!_photoToDecision.IsOdd) G.Get<EditController>().StateController.ChangeState(G.Get<EditController>().ChecklistState.WithNumber(_photoToDecision.Number));
             else
@@ -71,9 +74,11 @@ namespace _Project.Develop.Editing.States
             _ = Tween.Rotation(_photoToDecision.transform, endValue: new Vector3(0f, 0f, direction * 10f), duration: 0.2f, ease: Ease.OutQuad);
             await Tween.Alpha(_photoToDecision.Image, endValue: 0f, duration: 0.3f, ease: Ease.OutQuad);
             
-            _photoToDecision.gameObject.SetActive(false);
+            OnEndAnimate();
             
             if (!_photoToDecision.IsOdd) _editView.ReturnPhoto(_photoToDecision);
+            
+            G.Get<EditController>().StateController.ChangeState(G.Get<EditController>().EditingState);
         }
 
         private void OnChoosePhoto()
@@ -82,6 +87,12 @@ namespace _Project.Develop.Editing.States
             _editView.ButtonsGroup.blocksRaycasts = false;
             
             _ = Tween.Alpha(_editView.ButtonsGroup, endValue: 0f, duration: 0.2f, ease: Ease.InBack);
+        }
+
+        private void OnEndAnimate()
+        {
+            _photoToDecision.gameObject.SetActive(false);
+            _effects.enabled = true;
         }
 
         public async UniTask Exit()

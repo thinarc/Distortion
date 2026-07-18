@@ -57,7 +57,7 @@ namespace _Project.Develop.Editing.Tools
             {
                 await UniTask.Yield();
                 
-                if (!_isOnPhoto)
+                if (!_isOnPhoto || !Picked)
                 {
                     _sprayParticles.Stop();
                     continue;

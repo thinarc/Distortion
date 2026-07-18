@@ -1,5 +1,6 @@
 using System;
 using _Project.Develop.Editing.Photo;
+using _Project.Develop.UI;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
 using UnityEngine;
@@ -11,12 +12,14 @@ namespace _Project.Develop.Editing.States
         private readonly EditView _editView;
         
         private EditingPhoto _photoToRotate;
+        private UIEffects _effects;
 
         public RotateState(EditView editView) => _editView = editView;
 
         public RotateState WithPhoto(EditingPhoto photoToRotate)
         {
             _photoToRotate = photoToRotate;
+            _effects ??= photoToRotate.GetComponentInParent<UIEffects>();
             return this;
         }
         
@@ -32,9 +35,12 @@ namespace _Project.Develop.Editing.States
         public async UniTask Exit()
         {
             G.Get<EventBus>().PhotoDown -= OnPhotoDown;
-            
-            _ = Tween.Alpha(_editView.SpotsGroup, endValue: 0, duration: 0.2f, ease: Ease.InQuad);
 
+            _effects.enabled = false;
+            
+            _ = Tween.Rotation(_editView.SpotsGroup.transform, endValue: new Vector3(0f, 90f, 0f), duration: 0.15f, ease: Ease.InQuad)
+                .OnComplete(() => _editView.SpotsGroup.alpha = 0);
+            
             await Tween.Rotation(_photoToRotate.transform, endValue: new Vector3(0f, 90f, 0f), duration: 0.15f, ease: Ease.InQuad);
             _photoToRotate.Image.sprite = _photoToRotate.BackdropPhoto;
 
