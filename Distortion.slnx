@@ -1,0 +1,22 @@
+﻿<Solution>
+  <Project Path="SingularityGroup.HotReload.Editor.csproj" />
+  <Project Path="UniTask.csproj" />
+  <Project Path="UniTask.Linq.csproj" />
+  <Project Path="SingularityGroup.HotReload.Runtime.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+  <Project Path="UniTask.Addressables.csproj" />
+  <Project Path="PrimeTween.Demo.csproj" />
+  <Project Path="FMODUnityResonanceEditor.csproj" />
+  <Project Path="FMODUnityEditor.csproj" />
+  <Project Path="FMODUnity.csproj" />
+  <Project Path="FMODUnityHaptics.csproj" />
+  <Project Path="SingularityGroup.HotReload.Runtime.Public.csproj" />
+  <Project Path="UniTask.TextMeshPro.csproj" />
+  <Project Path="FMODUnityResonance.csproj" />
+  <Project Path="UniTask.Editor.csproj" />
+  <Project Path="Sirenix.OdinInspector.Modules.UnityMathematics.csproj" />
+  <Project Path="PrimeTween.Debug.csproj" />
+  <Project Path="UniTask.DOTween.csproj" />
+  <Project Path="PrimeTween.Installer.csproj" />
+</Solution>

@@ -3,7 +3,7 @@ using FMOD.Studio;
 using FMODUnity;
 
 // address 
-namespace _Project.Scripts.Sound.Handles
+namespace _Project.Develop.Sound.Handles
 {
     // class named
     public class UIHandle

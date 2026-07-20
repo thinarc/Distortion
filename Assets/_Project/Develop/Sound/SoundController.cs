@@ -1,4 +1,4 @@
-using _Project.Scripts.Sound.Handles;
+using _Project.Develop.Sound.Handles;
 using Cysharp.Threading.Tasks;
 using FMOD.Studio;
 using UnityEngine;
@@ -35,14 +35,14 @@ namespace _Project.Develop.Sound
         public AnomalyHandle AnomalyHandle { get; private set; } = new();
         
         public void Initialize()
-        {
-            // _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");
+        { 
+            _masterBus = FMODUnity.RuntimeManager.GetBus("bus:/");
             MasterVolume = PlayerPrefs.GetFloat("Master", 0.6f);
             
-            // MusicHandle.Initialize();
+             MusicHandle.Initialize();
             // SfxHandle.Initialize();
             // AmbientHandle.Initialize();
-            // UIHandle.Initialize();
+            UIHandle.Initialize();
             // ActionHandle.Initialize();
             // AnomalyHandle.Initialize();
             

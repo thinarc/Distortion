@@ -35,9 +35,12 @@ namespace _Project.Develop.UI.Menus
         private bool _open;
         private bool _started;
         private bool _credits;
+        
+        private bool _isPause;
 
         private void Start()
         {
+            
             _group = GetComponentInChildren<CanvasGroup>();
             _input = G.Get<InputController>();
             
@@ -82,7 +85,7 @@ namespace _Project.Develop.UI.Menus
         private void OnQuitDown(InputAction.CallbackContext ctx)
         {
             if (_started && !_open) ShowMenu(true);
-            else if (_started && _open) CloseMenu(true);
+            else if (_started && _open) CloseMenu();
             else if (!_started && _open && _credits) CloseCredits();
             _quitHold = true;
         }
@@ -99,56 +102,69 @@ namespace _Project.Develop.UI.Menus
             _input.Player.Player.Quit.performed -= OnQuitDown;
             _input.Player.Player.Quit.canceled -= OnQuitUp;
         }
-        
+
         public async void ShowMenu(bool pause)
         {
+            _isPause = pause;
+            G.Get<SoundController>().UIHandle.PlayHover();
             _ = Tween.Alpha(_group, endValue: 1f, duration: 0.4f, ease: Ease.InOutSine, useUnscaledTime: true);
             _group.interactable = true;
             _group.blocksRaycasts = true;
-            
+
             Time.timeScale = 0;
             _open = true;
-            
+
             if (pause)
             {
                 var main = rainParticles.main;
                 main.prewarm = true;
-                
+
                 creditsButton.gameObject.SetActive(false);
                 startText.text = "Вернуться";
+                G.Get<SoundController>().MusicHandle.EnterPause();
 
                 await UniTask.WaitForSeconds(0.2f, ignoreTimeScale: true);
             }
-            else _ = Tween.Alpha(lightGroup, endValue: 1f, duration: 1.4f, ease: Ease.InOutSine, useUnscaledTime: true);
-             
+            else
+            {
+                _ = Tween.Alpha(lightGroup, endValue: 1f, duration: 1.4f, ease: Ease.InOutSine, useUnscaledTime: true);
+                G.Get<SoundController>().MusicHandle.PlayMainTheme();
+            }
+            
             rainParticles.gameObject.SetActive(true);
         }
 
         public async UniTask ShowMenu()
         {
+            
             ShowMenu(false);
             await UniTask.WaitUntil(() => !_open);
         }
 
-        public void CloseMenu(bool pause = false)
+        public void CloseMenu()
         {
-            _ = Tween.Alpha(_group, endValue: 0f, duration: pause ? 0.2f : 0.6f, ease: Ease.InOutSine, useUnscaledTime: true).OnComplete(() =>
+            if (_isPause) G.Get<SoundController>().MusicHandle.ExitPause();
+            else G.Get<SoundController>().MusicHandle.PlayBgMusic();
+    
+            G.Get<SoundController>().UIHandle.PlayClick();
+            _ = Tween.Alpha(_group, endValue: 0f, duration: _isPause ? 0.2f : 0.6f, ease: Ease.InOutSine, useUnscaledTime: true).OnComplete(() =>
             {
                 Time.timeScale = 1f;
                 _open = false;
                 _started = true;
             });
-            
+    
             _group.interactable = false;
             _group.blocksRaycasts = false;
-            
-            if (!pause) Tween.Alpha(lightGroup, endValue: 0, duration: 0.4f, ease: Ease.InOutSine, useUnscaledTime: true);
-            
+    
+            if (!_isPause) Tween.Alpha(lightGroup, endValue: 0, duration: 0.4f, ease: Ease.InOutSine, useUnscaledTime: true);
+    
             rainParticles.gameObject.SetActive(false);
         }
         
         public void ShowCredits()
         {
+            G.Get<SoundController>().UIHandle.PlayClick();
             Tween.Scale(creditsGroup.transform, endValue: 1, duration: 0.1f, ease: Ease.InOutSine, useUnscaledTime: true);
             Tween.Alpha(creditsGroup, endValue: 1, duration: 0.1f, ease: Ease.InOutSine, useUnscaledTime: true).OnComplete(() =>
             {
@@ -162,6 +178,7 @@ namespace _Project.Develop.UI.Menus
         
         public void CloseCredits()
         {
+            G.Get<SoundController>().UIHandle.PlayExit();
             Tween.Scale(creditsGroup.transform, endValue: 0.8f, duration: 0.2f, ease: Ease.InOutSine, useUnscaledTime: true);
             Tween.Alpha(creditsGroup, endValue: 0, duration: 0.08f, ease: Ease.InOutSine, useUnscaledTime: true).OnComplete(() =>
             {
@@ -176,19 +193,23 @@ namespace _Project.Develop.UI.Menus
         
         public void OnVolumeChange()
         {
+           
             G.Get<SoundController>().MasterVolume = volumeSlider.value;
             ChooseVolumeHint();
         }
           
         public void OnVolume()
         {
+           
             if (_pastVolume < 0.2f) _pastVolume = 0.2f;
             volumeSlider.value = _pastVolume;
             OnVolumeChange();
+            
         }
         
         public void OffVolume()
         {
+            G.Get<SoundController>().UIHandle.PlayScroll();
             _pastVolume = G.Get<SoundController>().MasterVolume;
             G.Get<SoundController>().MasterVolume = 0f;
             volumeSlider.value = 0f;
@@ -197,6 +218,7 @@ namespace _Project.Develop.UI.Menus
         
         private void ChooseVolumeHint()
         {
+           
             volumeButtons.ForEach(h => h.gameObject.SetActive(false));
             if (volumeSlider.value < 0.05f) volumeButtons[0].gameObject.SetActive(true);
             else if (volumeSlider.value < 0.4f) volumeButtons[1].gameObject.SetActive(true);
@@ -206,6 +228,7 @@ namespace _Project.Develop.UI.Menus
         
         public void QuitGame()
         {
+            G.Get<SoundController>().UIHandle.PlayExit();
             Application.Quit();
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;

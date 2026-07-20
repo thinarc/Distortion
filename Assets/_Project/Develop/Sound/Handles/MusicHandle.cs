@@ -1,13 +1,13 @@
 using FMOD.Studio;
 using FMODUnity;
 
-namespace _Project.Scripts.Sound.Handles
+namespace _Project.Develop.Sound.Handles
 {
     public class MusicHandle
     {
         private EventInstance _mainTheme;
-        private EventInstance _pianoTheme;
-        private EventInstance _bgCello;
+        private EventInstance _bgMusic;
+        
         
         // Ссылка на текущий играющий трек
         private EventInstance _currentTrack;
@@ -15,43 +15,17 @@ namespace _Project.Scripts.Sound.Handles
         public void Initialize()
         {
             _mainTheme = RuntimeManager.CreateInstance("event:/Music/Main_Them");
-            _pianoTheme = RuntimeManager.CreateInstance("event:/Music/S_Piano_Th");
-            _bgCello = RuntimeManager.CreateInstance("event:/Music/Bg_Cello");
+            _bgMusic = RuntimeManager.CreateInstance("event:/Music/BG_Music");
+            
         }
 
         public void PlayMainTheme()
         {
             SwitchTo(_mainTheme);
         }
-
-        public void PlayPianoTheme()
+        public void PlayBgMusic()
         {
-            SwitchTo(_pianoTheme);
-        }
-
-        public void PlayBgCello()
-        {
-            SwitchTo(_bgCello);
-        }
-
-        // --- НОВЫЙ МЕТОД: ВЫБОР СЛУЧАЙНОГО ТРЕКА ДЛЯ ФОНА ---
-        public void PlayRandomBackgroundMusic()
-        {
-            // Генерируем случайное число от 0 до 2 включительно
-            int randomTrack = UnityEngine.Random.Range(0, 3);
-
-            switch (randomTrack)
-            {
-                case 0:
-                    SwitchTo(_mainTheme);
-                    break;
-                case 1:
-                    SwitchTo(_pianoTheme);
-                    break;
-                case 2:
-                    SwitchTo(_bgCello);
-                    break;
-            }
+            SwitchTo(_bgMusic);
         }
         
         public void StopMusic()
@@ -77,6 +51,22 @@ namespace _Project.Scripts.Sound.Handles
                 _currentTrack.setPaused(false);
             }
         }
+        
+        public void EnterPause()
+        {
+            if (_currentTrack.isValid())
+                _currentTrack.setPaused(true);
+    
+            _mainTheme.start();
+        }
+
+        public void ExitPause()
+        {
+            _mainTheme.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+    
+            if (_currentTrack.isValid())
+                _currentTrack.setPaused(false);
+        }
 
         private void SwitchTo(EventInstance newTrack)
         {
@@ -88,20 +78,36 @@ namespace _Project.Scripts.Sound.Handles
             _currentTrack = newTrack;
             _currentTrack.start();
         }
-        
-        public void SetLowPass(float value)
+        // == PARAMETRS ==
+        public void SetWindow(float value)
         {
             if (_currentTrack.isValid())
             {
-                _currentTrack.setParameterByName("LowPass", value, false);
+                _currentTrack.setParameterByName("Window", value, false);
             }
         }
 
-        public void SetVolume(float value)
+        public void SetBeforeRumble(float value)
         {
             if (_currentTrack.isValid())
             {
-                _currentTrack.setParameterByName("Volume", value, false);
+                _currentTrack.setParameterByName("BeforeRumble", value, false);
+            }
+        }
+        
+        public void SetEvil(float value)
+        {
+            if (_currentTrack.isValid())
+            {
+                _currentTrack.setParameterByName("Evil", value, false);
+            }
+        }
+        
+        public void SetRumble(float value)
+        {
+            if (_currentTrack.isValid())
+            {
+                _currentTrack.setParameterByName("Rumble", value, false);
             }
         }
     }

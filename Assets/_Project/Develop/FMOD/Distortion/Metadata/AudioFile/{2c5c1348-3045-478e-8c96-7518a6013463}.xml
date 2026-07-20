@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{2c5c1348-3045-478e-8c96-7518a6013463}">
+		<property name="assetPath">
+			<value>Anomaly/Footsteps Fast.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>45.548958333333331</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{9522ad03-76ec-448d-8fdd-e3036d452f50}</destination>
+		</relationship>
+	</object>
+</objects>

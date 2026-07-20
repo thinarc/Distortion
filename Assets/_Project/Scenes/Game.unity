@@ -2564,9 +2564,9 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1255417114}
-        m_TargetAssemblyTypeName: _Project.Develop.Menus.MainMenu, Assembly-CSharp
+        m_TargetAssemblyTypeName: _Project.Develop.UI.Menus.MainMenu, Assembly-CSharp
         m_MethodName: CloseMenu
-        m_Mode: 6
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

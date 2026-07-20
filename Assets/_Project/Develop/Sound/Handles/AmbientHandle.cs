@@ -3,7 +3,7 @@ using FMOD.Studio;
 using FMODUnity;
 
 // address 
-namespace _Project.Scripts.Sound.Handles
+namespace _Project.Develop.Sound.Handles
 {
     // class named
     public class AmbientHandle
@@ -11,8 +11,6 @@ namespace _Project.Scripts.Sound.Handles
         
     // set variables
     {
-        private EventInstance _deaf;
-        private EventInstance _rumble;
         private EventInstance _street;
         private EventInstance _clock;
         
@@ -23,27 +21,8 @@ namespace _Project.Scripts.Sound.Handles
         public void Initialize()
         // create a live copy for event to control it
         {
-            _deaf = RuntimeManager.CreateInstance("event:/bg/Deaf");
-            _rumble = RuntimeManager.CreateInstance("event:/bg/Rumble");
             _street = RuntimeManager.CreateInstance("event:/bg/Street");
             _clock = RuntimeManager.CreateInstance("event:/bg/Clock");
-        }
-
-        
-        // external buttons
-        public void PlayRumble()
-        {
-            SwitchTo(_rumble);
-        }
-        //Deaf just like play&stop
-        public void PlayDeaf()
-        {
-            _deaf.start();
-        }
-
-        public void StopDeaf()
-        {
-            _deaf.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         }
         
         // Street Play&Stop
@@ -56,16 +35,8 @@ namespace _Project.Scripts.Sound.Handles
         {
             _street.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
         }
-
-
-        //Lets stop the music
-        public void StopAmbient()
-        {
-            _currentTrack.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-            _deaf.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-        }
-
-        public void PauseAmbient()
+        
+              public void PauseAmbient()
         {
             _currentTrack.setPaused(true);
         }
@@ -95,9 +66,9 @@ namespace _Project.Scripts.Sound.Handles
         }
         
         // im setting all parametrs here
-        public void SetLowPass(float value)
+        public void SetWindow(float value)
         {
-            _currentTrack.setParameterByName("LowPass", value, false);
+            _currentTrack.setParameterByName("Window", value, false);
         }
         public void SetVolume(float value)
         {
