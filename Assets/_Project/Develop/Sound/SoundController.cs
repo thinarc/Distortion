@@ -41,15 +41,13 @@ namespace _Project.Develop.Sound
             
              MusicHandle.Initialize();
             // SfxHandle.Initialize();
-            // AmbientHandle.Initialize();
+            AmbientHandle.Initialize();
             UIHandle.Initialize();
             // ActionHandle.Initialize();
             // AnomalyHandle.Initialize();
             
-            // MusicHandle.PlayPianoTheme();
-            
             // MusicHandle.SetLowPass(1f);
-            // MusicHandle.SetVolume(1f);
+             //MusicHandle.SetVolume(1f);
             
             UpdateCycle();
         }

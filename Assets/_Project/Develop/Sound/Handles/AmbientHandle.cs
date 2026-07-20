@@ -28,31 +28,12 @@ namespace _Project.Develop.Sound.Handles
         // Street Play&Stop
         public void PlayStreet()
         {
-            SwitchTo(_street);
+            _street.start();
         }
 
         public void StopStreet()
         {
             _street.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-        }
-        
-              public void PauseAmbient()
-        {
-            _currentTrack.setPaused(true);
-        }
-
-        public void ResumeAmbient()
-        {
-            _currentTrack.setPaused(false);
-        }
-
-        private void SwitchTo(EventInstance newTrack)
-        // check: does a current track exist?
-        {
-            if (_currentTrack.isValid())
-                _currentTrack.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-            _currentTrack = newTrack;
-            _currentTrack.start();
         }
 
         public void GlobalClock()
@@ -63,21 +44,6 @@ namespace _Project.Develop.Sound.Handles
         public void Timeless()
         {
             _clock.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-        }
-        
-        // im setting all parametrs here
-        public void SetWindow(float value)
-        {
-            _currentTrack.setParameterByName("Window", value, false);
-        }
-        public void SetVolume(float value)
-        {
-            _currentTrack.setParameterByName("Volume", value,  false);
-        }
-
-        public void Nervous(float value)
-        {
-            _clock.setParameterByName("Nervous", value, false);
         }
         
     }
