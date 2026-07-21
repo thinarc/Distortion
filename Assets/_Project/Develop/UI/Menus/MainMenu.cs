@@ -12,19 +12,22 @@ namespace _Project.Develop.UI.Menus
 {
     public class MainMenu : MonoBehaviour
     {
-        [SerializeField] private Slider volumeSlider;
+        [SerializeField] private CanvasGroup containerGroup;
+        
+        [SerializeField, Space(5)] private Slider volumeSlider;
         [SerializeField] private Image[] volumeButtons = new Image[4];
         
         [SerializeField, Space(5)] private CanvasGroup creditsGroup;
         [SerializeField] private GameObject creditsCol;
         [SerializeField] private Button creditsButton;
         
-        [SerializeField, Space(5)] private CanvasGroup lightGroup;
+        [SerializeField, Space(5)] private CanvasGroup backgroundGroup;
+        [SerializeField] private CanvasGroup lightGroup;
         [SerializeField] private TextMeshProUGUI startText;
 
         [SerializeField, Space(5)] private ParticleSystem rainParticles;
         
-        private CanvasGroup _group;
+        private Button _startButton;
         private InputController _input;
 
         private float _quitTime = 2f;
@@ -32,22 +35,22 @@ namespace _Project.Develop.UI.Menus
 
         private bool _quitHold;
         
-        private bool _open;
+        private bool _opened;
         private bool _started;
         private bool _credits;
-        
+
         private bool _isPause;
 
         private void Start()
         {
-            
-            _group = GetComponentInChildren<CanvasGroup>();
+            _startButton = startText.GetComponentInParent<Button>();
             _input = G.Get<InputController>();
             
-            _group.alpha = 0;
-            _group.interactable = false;
-            _group.blocksRaycasts = false;
-            
+            containerGroup.alpha = 0;
+            containerGroup.interactable = false;
+            containerGroup.blocksRaycasts = false;
+
+            backgroundGroup.alpha = 0;
             lightGroup.alpha = 0;
             
             creditsGroup.alpha = 0;
@@ -58,6 +61,8 @@ namespace _Project.Develop.UI.Menus
             volumeSlider.value = G.Get<SoundController>().MasterVolume;
             ChooseVolumeHint();
             
+            volumeSlider.onValueChanged.AddListener(_ => OnVolumeChange());
+            
             _input.Player.Player.Info.performed += OnInfo;
             _input.Player.Player.Quit.performed += OnQuitDown;
             _input.Player.Player.Quit.canceled += OnQuitUp;
@@ -67,10 +72,10 @@ namespace _Project.Develop.UI.Menus
         {
             var input = G.Get<InputController>();
             
-            if (_open && !_credits && input.Player.Player.Navigate.ReadValue<Vector2>().x < 0) volumeSlider.value -= Time.unscaledDeltaTime * 0.8f;
-            else if (_open && !_credits && input.Player.Player.Navigate.ReadValue<Vector2>().x > 0) volumeSlider.value += Time.unscaledDeltaTime * 0.8f;
+            if (_opened && !_credits && input.Player.Player.Navigate.ReadValue<Vector2>().x < 0) volumeSlider.value -= Time.unscaledDeltaTime * 0.8f;
+            else if (_opened && !_credits && input.Player.Player.Navigate.ReadValue<Vector2>().x > 0) volumeSlider.value += Time.unscaledDeltaTime * 0.8f;
             
-            if (_open && _quitHold) _quitTime -= Time.unscaledDeltaTime;
+            if (_opened && _quitHold) _quitTime -= Time.unscaledDeltaTime;
             else _quitTime = Mathf.Clamp(_quitTime + Time.unscaledDeltaTime, 1f, 2f);
             
             if (_quitTime < 0f) QuitGame();
@@ -78,15 +83,15 @@ namespace _Project.Develop.UI.Menus
 
         private void OnInfo(InputAction.CallbackContext ctx)
         {
-            if (!_started && _open && !_credits) ShowCredits();
-            else if (!_started && _open && _credits) CloseCredits();
+            if (!_started && _opened && !_credits) ShowCredits();
+            else if (!_started && _opened && _credits) CloseCredits();
         }
         
         private void OnQuitDown(InputAction.CallbackContext ctx)
         {
-            if (_started && !_open) ShowMenu(true);
-            else if (_started && _open) CloseMenu();
-            else if (!_started && _open && _credits) CloseCredits();
+            if (_started && !_opened) ShowMenu(true);
+            else if (_started && _opened) CloseMenu();
+            else if (!_started && _opened && _credits) CloseCredits();
             _quitHold = true;
         }
         
@@ -102,83 +107,99 @@ namespace _Project.Develop.UI.Menus
             _input.Player.Player.Quit.performed -= OnQuitDown;
             _input.Player.Player.Quit.canceled -= OnQuitUp;
         }
-
+        
         public async void ShowMenu(bool pause)
         {
+            Tween.StopAll(containerGroup);
+            
+            _ = Tween.Alpha(containerGroup, endValue: 1f, duration: 0.4f, startDelay: 0.1f, ease: Ease.OutSine, useUnscaledTime: true);
+            containerGroup.interactable = true;
+            containerGroup.blocksRaycasts = true;
+
             _isPause = pause;
-            G.Get<SoundController>().UIHandle.PlayHover();
-            _ = Tween.Alpha(_group, endValue: 1f, duration: 0.4f, ease: Ease.InOutSine, useUnscaledTime: true);
-            _group.interactable = true;
-            _group.blocksRaycasts = true;
-
+            
+            _ = Tween.Alpha(backgroundGroup, endValue: 1f, duration: 0.4f, ease: Ease.OutSine, useUnscaledTime: true);
+            
             Time.timeScale = 0;
-            _open = true;
-
+            G.Get<EventBus>().Pause?.Invoke();
+            
             if (pause)
             {
                 var main = rainParticles.main;
                 main.prewarm = true;
-
+                
                 creditsButton.gameObject.SetActive(false);
                 startText.text = "Вернуться";
+                
+                Tween.StopAll(lightGroup);
+                
+                _ = Tween.Alpha(lightGroup, endValue: 0.7f, duration: 1.2f, ease: Ease.OutSine, useUnscaledTime: true);
                 G.Get<SoundController>().MusicHandle.EnterPause();
 
                 await UniTask.WaitForSeconds(0.2f, ignoreTimeScale: true);
             }
             else
             {
-                _ = Tween.Alpha(lightGroup, endValue: 1f, duration: 1.4f, ease: Ease.InOutSine, useUnscaledTime: true);
+                _ = Tween.Alpha(lightGroup, endValue: 0.9f, duration: 1.4f, ease: Ease.OutSine, useUnscaledTime: true);
                 G.Get<SoundController>().MusicHandle.PlayMainTheme();
             }
-            
+             
             rainParticles.gameObject.SetActive(true);
+            _opened = true;
         }
 
         public async UniTask ShowMenu()
         {
-            
             ShowMenu(false);
-            await UniTask.WaitUntil(() => !_open);
+            await UniTask.WaitUntil(() => !_opened);
         }
 
         public void CloseMenu()
         {
-            if (_isPause) G.Get<SoundController>().MusicHandle.ExitPause();
-            else G.Get<SoundController>().MusicHandle.PlayBgMusic();
-    
-            G.Get<SoundController>().UIHandle.PlayClick();
-            _ = Tween.Alpha(_group, endValue: 0f, duration: _isPause ? 0.2f : 0.6f, ease: Ease.InOutSine, useUnscaledTime: true).OnComplete(() =>
+            Tween.StopAll(containerGroup);
+            
+            Tween.Alpha(containerGroup, endValue: 0f, duration: _isPause ? 0.2f : 0.6f, ease: Ease.InQuad, useUnscaledTime: true).OnComplete(() =>
             {
                 Time.timeScale = 1f;
-                _open = false;
+                G.Get<EventBus>().Resume?.Invoke();
+                
+                _opened = false;
                 _started = true;
             });
-    
-            _group.interactable = false;
-            _group.blocksRaycasts = false;
-    
-            if (!_isPause) Tween.Alpha(lightGroup, endValue: 0, duration: 0.4f, ease: Ease.InOutSine, useUnscaledTime: true);
-    
+            
+            if (_isPause) G.Get<SoundController>().MusicHandle.ExitPause();
+            else G.Get<SoundController>().MusicHandle.PlayBgMusic();
+            
+            Tween.StopAll(lightGroup);
+
+            Tween.Alpha(backgroundGroup, endValue: 0f, duration: _isPause ? 0.2f : 0.6f, startDelay: 0.1f, ease: Ease.InQuad, useUnscaledTime: true);
+            Tween.Alpha(lightGroup, endValue: 0, duration: _isPause ? 0.2f : 0.4f, ease: Ease.InQuad, useUnscaledTime: true);
+            
+            containerGroup.interactable = false;
+            containerGroup.blocksRaycasts = false;
+            
             rainParticles.gameObject.SetActive(false);
         }
         
         public void ShowCredits()
         {
-            G.Get<SoundController>().UIHandle.PlayClick();
             Tween.Scale(creditsGroup.transform, endValue: 1, duration: 0.1f, ease: Ease.InOutSine, useUnscaledTime: true);
             Tween.Alpha(creditsGroup, endValue: 1, duration: 0.1f, ease: Ease.InOutSine, useUnscaledTime: true).OnComplete(() =>
             {
                 creditsGroup.interactable = true;
                 creditsGroup.blocksRaycasts = true;
                 _credits = true;
+                
+                _startButton.interactable = false;
+                containerGroup.GetComponent<UIEffects>().SlowMouseTilt();
             });
             creditsButton.interactable = false;
             creditsCol.SetActive(true);
+            creditsButton.GetComponent<UIEffects>().OnPointerExit(null);
         }
         
         public void CloseCredits()
         {
-            G.Get<SoundController>().UIHandle.PlayExit();
             Tween.Scale(creditsGroup.transform, endValue: 0.8f, duration: 0.2f, ease: Ease.InOutSine, useUnscaledTime: true);
             Tween.Alpha(creditsGroup, endValue: 0, duration: 0.08f, ease: Ease.InOutSine, useUnscaledTime: true).OnComplete(() =>
             {
@@ -189,36 +210,38 @@ namespace _Project.Develop.UI.Menus
             creditsGroup.blocksRaycasts = false;
             creditsCol.SetActive(false);
             
+            _startButton.interactable = true;
+            containerGroup.GetComponent<UIEffects>().ReturnMouseTilt();
         }
         
         public void OnVolumeChange()
         {
-           
-            G.Get<SoundController>().MasterVolume = volumeSlider.value;
-            ChooseVolumeHint();
+            G.Get<SoundController>().UIHandle.PlayScroll();
+            ApplyVolume();
         }
           
         public void OnVolume()
         {
-           
             if (_pastVolume < 0.2f) _pastVolume = 0.2f;
             volumeSlider.value = _pastVolume;
-            OnVolumeChange();
-            
+            ApplyVolume();
         }
         
         public void OffVolume()
         {
-            G.Get<SoundController>().UIHandle.PlayScroll();
             _pastVolume = G.Get<SoundController>().MasterVolume;
-            G.Get<SoundController>().MasterVolume = 0f;
             volumeSlider.value = 0f;
+            ApplyVolume();
+        }
+        
+        private void ApplyVolume()
+        {
+            G.Get<SoundController>().MasterVolume = volumeSlider.value;
             ChooseVolumeHint();
         }
         
         private void ChooseVolumeHint()
         {
-           
             volumeButtons.ForEach(h => h.gameObject.SetActive(false));
             if (volumeSlider.value < 0.05f) volumeButtons[0].gameObject.SetActive(true);
             else if (volumeSlider.value < 0.4f) volumeButtons[1].gameObject.SetActive(true);
@@ -228,7 +251,6 @@ namespace _Project.Develop.UI.Menus
         
         public void QuitGame()
         {
-            G.Get<SoundController>().UIHandle.PlayExit();
             Application.Quit();
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;

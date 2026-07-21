@@ -22,8 +22,11 @@ namespace _Project.Develop.UI
         Floating = 1 << 4,
         Breathing = 1 << 5,
         Wobble = 1 << 6,
+        
+        MouseTilt = 1 << 7
     }
 
+    [RequireComponent(typeof(RectTransform))]
     public class UIEffects : MonoBehaviour, IPointerEnterHandler,  IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
     {
         [SerializeField] private UIEffectType effects;
@@ -45,14 +48,22 @@ namespace _Project.Develop.UI
         
         [BoxGroup("Wobble"), ShowIf(nameof(HasWobble)), SerializeField, Space(5)] private float wobbleAngle = 3f;
         [BoxGroup("Wobble"), ShowIf(nameof(HasWobble)), SerializeField] private float wobbleDuration = 0.08f;
+        
+        [BoxGroup("Tilt"), ShowIf(nameof(HasMouseTilt)), SerializeField, Space(5)] private Vector2 positionTilt = new(8f, 8f);
+        [BoxGroup("Tilt"), ShowIf(nameof(HasMouseTilt)), SerializeField] private Vector2 rotationTilt = new(20f, 20f);
+        [BoxGroup("Tilt"), ShowIf(nameof(HasMouseTilt)), SerializeField] private float smoothTilt = 8f;
 
         private RectTransform _rect;
         private Canvas _canvas;
+
+        private Button _button;
         
         private InputController _inputController;
-
-        private Vector3 _baseScale;
+        
         private Vector3 _basePosition;
+        private Vector3 _baseScale;
+        
+        private Quaternion _baseRotation;
 
         private bool _hovering;
 
@@ -68,11 +79,15 @@ namespace _Project.Develop.UI
         {
             _rect = (RectTransform)transform;
             _canvas = GetComponentInParent<Canvas>();
+
+            TryGetComponent(out _button);
             
             _inputController = G.Get<InputController>();
-
-            _baseScale = transform.localScale;
+            
             _basePosition = transform.localPosition;
+            _baseScale = transform.localScale;
+            
+            _baseRotation = transform.localRotation;
 
             _targetRotation = Quaternion.identity;
             _targetPosition = _basePosition;
@@ -97,6 +112,12 @@ namespace _Project.Develop.UI
         }
 
         private void Update()
+        {
+            HoverHandle();
+            MouseHandle();
+        }
+
+        private void HoverHandle()
         {
             var useTilt = Has(UIEffectType.HoverTilt);
             var useMove = Has(UIEffectType.HoverMove);
@@ -139,11 +160,30 @@ namespace _Project.Develop.UI
             _rect.localPosition = Vector3.Lerp(_rect.localPosition, _targetPosition, Time.unscaledDeltaTime * smoothSpeed);
         }
 
+        private void MouseHandle()
+        {
+            if (!Has(UIEffectType.MouseTilt)) return;
+            
+            var mouse = _inputController.Player.Player.MousePosition.ReadValue<Vector2>();
+
+            var normalizedX = (mouse.x / Screen.width - 0.5f) * 2f;
+            var normalizedY = (mouse.y / Screen.height - 0.5f) * 2f;
+
+            var targetRotation = _baseRotation * Quaternion.Euler(-normalizedY * rotationTilt.x, normalizedX * rotationTilt.y, 0f);
+            var targetPosition = _basePosition + new Vector3(normalizedX * positionTilt.x, normalizedY * positionTilt.y, 0f);
+
+            _rect.localRotation = Quaternion.Lerp(_rect.localRotation, targetRotation, Time.unscaledDeltaTime * smoothSpeed);
+            _rect.localPosition = Vector3.Lerp(_rect.localPosition, targetPosition, Time.unscaledDeltaTime * smoothSpeed);
+        }
+
+        public void SlowMouseTilt() => smoothSpeed /= 4f;
+        public void ReturnMouseTilt() => smoothSpeed *= 4f;
+
         public void OnPointerEnter(PointerEventData eventData)
         {
             _hovering = true;
 
-            if (!Has(UIEffectType.HoverScale)) return;
+            if (!Has(UIEffectType.HoverScale) || !_button?.interactable == true) return;
 
             Tween.StopAll(transform);
             
@@ -154,7 +194,7 @@ namespace _Project.Develop.UI
         {
             _hovering = false;
 
-            if (!Has(UIEffectType.HoverScale)) return;
+            if (!Has(UIEffectType.HoverScale) || transform.localScale == _baseScale) return;
                 
             Tween.StopAll(transform);
 
@@ -163,14 +203,14 @@ namespace _Project.Develop.UI
         
         public void OnPointerDown(PointerEventData eventData)
         {
-            if (!Has(UIEffectType.PressScale)) return;
+            if (!Has(UIEffectType.PressScale) || !_button?.interactable == true) return;
             
             Tween.Scale(transform, endValue: _baseScale * pressScale, duration: 0.05f, useUnscaledTime: unscaledTime);
         }
 
         public void OnPointerUp(PointerEventData eventData)
         {
-            if (!Has(UIEffectType.PressScale)) return;
+            if (!Has(UIEffectType.PressScale) || !_button?.interactable == true) return;
 
             var target = _hovering && Has(UIEffectType.HoverScale) ? hoverScale : 1f;
             
@@ -193,5 +233,7 @@ namespace _Project.Develop.UI
         private bool HasFloating => Has(UIEffectType.Floating);
         private bool HasBreathing => Has(UIEffectType.Breathing);
         private bool HasWobble => Has(UIEffectType.Wobble);
+        
+        private bool HasMouseTilt => Has(UIEffectType.MouseTilt);
     }
 }

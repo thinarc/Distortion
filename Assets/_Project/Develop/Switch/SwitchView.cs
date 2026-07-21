@@ -34,6 +34,18 @@ namespace _Project.Develop.Switch
             G.Get<InputController>().Player.Player.Navigate.performed += OnNavigate;
             G.Get<EventBus>().CurtainChanged += OnCurtainChanged;
             
+            OnResume();
+            G.Get<EventBus>().Pause += OnPause;
+            G.Get<EventBus>().Resume += OnResume;
+        }
+
+        private void OnPause()
+        {
+            Tween.Alpha(_group, endValue: 0f, duration: 0.05f, Ease.InOutSine, useUnscaledTime: true);
+        }
+
+        private void OnResume()
+        {
             Tween.Alpha(_group, endValue: 1f, duration: 0.4f, Ease.InOutSine);
         }
         
@@ -70,10 +82,6 @@ namespace _Project.Develop.Switch
             buttons[2].interactable = !string.IsNullOrEmpty(directions.bottom);
             buttons[3].interactable = !string.IsNullOrEmpty(directions.up) && G.Get<UICurtain>().BothOpen;
             buttons[4].interactable = !string.IsNullOrEmpty(directions.things) && G.Get<UICurtain>().BothOpen;
-
-            if (!buttons[3].interactable && !buttons[2].interactable) return;
-            buttons[2].gameObject.SetActive(!buttons[3].interactable);
-            buttons[3].gameObject.SetActive(buttons[3].interactable);
         }
 
         private void OnCurtainChanged()

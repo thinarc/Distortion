@@ -16,5 +16,8 @@ namespace _Project.Develop
         public Action PhotoDown;
 
         public Action ChecklistDown;
+
+        public Action Pause;
+        public Action Resume;
     }
 }
