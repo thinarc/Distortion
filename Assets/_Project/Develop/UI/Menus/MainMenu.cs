@@ -134,7 +134,7 @@ namespace _Project.Develop.UI.Menus
                 Tween.StopAll(lightGroup);
                 
                 _ = Tween.Alpha(lightGroup, endValue: 0.7f, duration: 1.2f, ease: Ease.OutSine, useUnscaledTime: true);
-                G.Get<SoundController>().MusicHandle.EnterPause();
+                G.Get<SoundController>().EnterPause();
 
                 await UniTask.WaitForSeconds(0.2f, ignoreTimeScale: true);
             }
@@ -156,6 +156,7 @@ namespace _Project.Develop.UI.Menus
 
         public void CloseMenu()
         {
+            G.Get<SoundController>().UIHandle.PlayClick();
             Tween.StopAll(containerGroup);
             
             Tween.Alpha(containerGroup, endValue: 0f, duration: _isPause ? 0.2f : 0.6f, ease: Ease.InQuad, useUnscaledTime: true).OnComplete(() =>
@@ -167,7 +168,7 @@ namespace _Project.Develop.UI.Menus
                 _started = true;
             });
             
-            if (_isPause) G.Get<SoundController>().MusicHandle.ExitPause();
+            if (_isPause) G.Get<SoundController>().ExitPause();
             else G.Get<SoundController>().MusicHandle.PlayBgMusic();
             
             Tween.StopAll(lightGroup);
@@ -196,6 +197,8 @@ namespace _Project.Develop.UI.Menus
             creditsButton.interactable = false;
             creditsCol.SetActive(true);
             creditsButton.GetComponent<UIEffects>().OnPointerExit(null);
+            
+            G.Get<SoundController>().UIHandle.PlayClick();
         }
         
         public void CloseCredits()
@@ -212,6 +215,8 @@ namespace _Project.Develop.UI.Menus
             
             _startButton.interactable = true;
             containerGroup.GetComponent<UIEffects>().ReturnMouseTilt();
+            
+            G.Get<SoundController>().UIHandle.PlayExit();
         }
         
         public void OnVolumeChange()
@@ -254,6 +259,7 @@ namespace _Project.Develop.UI.Menus
             Application.Quit();
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
+            G.Get<SoundController>().UIHandle.PlayExit();
 #endif
         }
     }

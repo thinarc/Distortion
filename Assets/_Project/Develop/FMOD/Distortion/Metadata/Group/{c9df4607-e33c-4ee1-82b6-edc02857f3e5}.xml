@@ -5,7 +5,7 @@
 			<value>Red</value>
 		</property>
 		<property name="name">
-			<value>bg</value>
+			<value>SetPause</value>
 		</property>
 		<relationship name="effectChain">
 			<destination>{cb75d116-492f-48da-862d-71c7da589b07}</destination>
@@ -30,10 +30,10 @@
 			<value>4</value>
 		</property>
 		<property name="frequencyA">
-			<value>230.578033</value>
+			<value>190</value>
 		</property>
 		<property name="qualityA">
-			<value>0.234158173</value>
+			<value>0.680000007</value>
 		</property>
 	</object>
 </objects>

@@ -21,8 +21,19 @@ namespace _Project.Develop.Sound.Handles
 
         public void PlayMainTheme()
         {
-            SwitchTo(_mainTheme);
+            SwitchTo(_mainTheme);   
         }
+
+        public void PlayMainThemeDirect()
+        {
+            _mainTheme.start();     
+        }
+
+        public void StopMainThemeDirect()
+        {
+            _mainTheme.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
+        }
+        
         public void PlayBgMusic()
         {
             SwitchTo(_bgMusic);
@@ -52,22 +63,6 @@ namespace _Project.Develop.Sound.Handles
             }
         }
         
-        public void EnterPause()
-        {
-            if (_currentTrack.isValid())
-                _currentTrack.setPaused(true);
-    
-            _mainTheme.start();
-        }
-
-        public void ExitPause()
-        {
-            _mainTheme.stop(FMOD.Studio.STOP_MODE.ALLOWFADEOUT);
-    
-            if (_currentTrack.isValid())
-                _currentTrack.setPaused(false);
-        }
-
         private void SwitchTo(EventInstance newTrack)
         {
             if (_currentTrack.isValid())

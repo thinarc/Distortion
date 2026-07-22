@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="66c89877-6855-4f7d-825b-98532fe9875c" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/../../../Art/Fonts/SDF/senkisslo.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Art/Fonts/SDF/senkisslo.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../Art/Fonts/SDF/senkissloWobble.asset" beforeDir="false" afterPath="$PROJECT_DIR$/../../../Art/Fonts/SDF/senkissloWobble.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/buildrecords/Desktop/Anomaly.br" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/buildrecords/Desktop/Anomaly.br" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/buildrecords/Desktop/Master.br" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/buildrecords/Desktop/Master.br" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/buildrecords/Desktop/Music.br" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/buildrecords/Desktop/Music.br" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/buildrecords/Desktop/SFX.br" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/buildrecords/Desktop/SFX.br" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/buildrecords/Desktop/UI.br" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/buildrecords/Desktop/UI.br" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/buildrecords/Desktop/bg.br" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/buildrecords/Desktop/bg.br" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/{67e2ea69-3e06-4320-b955-99ffef281fe9}.pdc" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/.cache/{67e2ea69-3e06-4320-b955-99ffef281fe9}.pdc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/Anomaly.bank" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/Anomaly.bank" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/Master.bank" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/Master.bank" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/Master.strings.bank" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/Master.strings.bank" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/Music.bank" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/Music.bank" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/SFX.bank" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/SFX.bank" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/UI.bank" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/UI.bank" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/bg.bank" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Build/Desktop/bg.bank" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Metadata/Event/{6523ffc6-b09c-4e3c-bdb6-4a5de72c8f14}.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Metadata/Event/{6523ffc6-b09c-4e3c-bdb6-4a5de72c8f14}.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Metadata/Event/{b9909c8b-0fd4-4deb-864f-0ef220bc5eb9}.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Metadata/Event/{b9909c8b-0fd4-4deb-864f-0ef220bc5eb9}.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Metadata/Event/{ec3d52f5-3bf9-460e-bb97-5377f7b66bc0}.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Metadata/Event/{ec3d52f5-3bf9-460e-bb97-5377f7b66bc0}.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Metadata/Group/{69c8663b-df87-485d-bd91-7509837da6bd}.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Metadata/Group/{69c8663b-df87-485d-bd91-7509837da6bd}.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Metadata/Group/{c9df4607-e33c-4ee1-82b6-edc02857f3e5}.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Metadata/Group/{c9df4607-e33c-4ee1-82b6-edc02857f3e5}.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../FMOD/Distortion/Metadata/Group/{f8d464f4-33f8-41e9-a1ab-f27f508f2bb9}.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../FMOD/Distortion/Metadata/Group/{f8d464f4-33f8-41e9-a1ab-f27f508f2bb9}.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Sound/Handles/MusicHandle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Sound/Handles/MusicHandle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../Sound/SoundController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../../Sound/SoundController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Menus/MainMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/../Menus/MainMenu.cs" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="1" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../../.." />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 5,
+  "fromUser": false
+}]]></component>
+  <component name="ProjectId" id="3GpwFWNuyakGyZ9uDP1yRBhzi8A" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cidr.known.project.marker": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "main",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="66c89877-6855-4f7d-825b-98532fe9875c" name="Changes" comment="" />
+      <created>1784681715665</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1784681715665</updated>
+      <workItem from="1784681719392" duration="90000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="VcsManagerConfiguration">
+    <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.OperationCanceledException" breakIfHandledByOtherCode="false" displayValue="System.OperationCanceledException" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.Tasks.TaskCanceledException" breakIfHandledByOtherCode="false" displayValue="System.Threading.Tasks.TaskCanceledException" />
+          <option name="timeStamp" value="2" />
+        </breakpoint>
+        <breakpoint enabled="true" type="DotNet_Exception_Breakpoints">
+          <properties exception="System.Threading.ThreadAbortException" breakIfHandledByOtherCode="false" displayValue="System.Threading.ThreadAbortException" />
+          <option name="timeStamp" value="3" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
