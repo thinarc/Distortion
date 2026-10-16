@@ -15,6 +15,12 @@ MonoBehaviour:
   m_GroupName: Localization-Assets-Russian (Russia) (ru-RU)
   m_GUID: c0f83cc9b27e074408d726fa6de4877a
   m_SerializeEntries:
+  - m_GUID: 03e7f6fe9cc14714a8c9bf5c7915ea07
+    m_Address: photo16_0
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ru-RU
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0c891271efa18ac42a5899b08f961640
     m_Address: photo4_0
     m_ReadOnly: 1
@@ -39,14 +45,32 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale-ru-RU
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 158578a8c9cc80949b76fc9b06fcffce
+    m_Address: list
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ru-RU
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 406b4ab63439e204596b379828590254
     m_Address: photo10_0
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-ru-RU
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 463cdb825b9bcfb4d8d81594c85c8413
+    m_Address: photo15_0
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ru-RU
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 51858aabd57277c4487ecda8af4b5a88
     m_Address: photo2_0
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ru-RU
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 53b962a88bbbb7144ad1a04882b7d950
+    m_Address: photo12_0
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-ru-RU
@@ -69,6 +93,12 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale-ru-RU
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 76746ace3d72a2f40845b111f30ca007
+    m_Address: photo11_0
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ru-RU
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 86b070425eefd644ab3e41967fd74d42
     m_Address: photo5_0
     m_ReadOnly: 1
@@ -81,8 +111,26 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale-ru-RU
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9ccb4a26f2af8f14e9fb5d1a2fc0886d
+    m_Address: photo14_0
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ru-RU
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a0f84af4d492bb942b26b1e9da2e2f9d
+    m_Address: photo18_0
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ru-RU
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: a2d12569636d60b48b42dc16c1271678
     m_Address: photoOdd_0
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ru-RU
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a346ea36661699445a7f988fccf38f10
+    m_Address: photo13_0
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-ru-RU
@@ -93,14 +141,20 @@ MonoBehaviour:
     m_SerializedLabels:
     - Locale-ru-RU
     FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: d3ee20ae23b9af1459b06ff598b2fb21
-    m_Address: list
+  - m_GUID: ce75b01386c0e884a9a3d34a8c07d5c0
+    m_Address: photo17_0
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-ru-RU
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d88e3c12ce8d3164f93f511946f80ab8
     m_Address: spray
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ru-RU
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fb07e014a17867745845efe532664867
+    m_Address: photo19_0
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-ru-RU

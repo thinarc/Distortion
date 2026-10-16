@@ -69,6 +69,10 @@ MonoBehaviour:
     m_Key: quit.n
     m_Metadata:
       m_Items: []
+  - m_Id: 24384332217966592
+    m_Key: list.strings
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:
