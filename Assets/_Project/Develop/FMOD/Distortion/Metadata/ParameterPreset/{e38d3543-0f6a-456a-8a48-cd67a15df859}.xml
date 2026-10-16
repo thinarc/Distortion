@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="ParameterPreset" id="{e38d3543-0f6a-456a-8a48-cd67a15df859}">
+		<property name="name">
+			<value>Rumble</value>
+		</property>
+		<relationship name="folder">
+			<destination>{809d66d3-fb88-407d-8c25-0c88098cc78b}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{706b3999-5d96-4962-9070-0a631d4e5732}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{706b3999-5d96-4962-9070-0a631d4e5732}">
+		<property name="parameterType">
+			<value>1</value>
+		</property>
+		<property name="maximum">
+			<value>2</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

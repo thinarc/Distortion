@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.03.00">
+	<object class="AudioFile" id="{3f7da535-2a04-4d45-b7ff-0601b4d487fc}">
+		<property name="assetPath">
+			<value>Anomaly/House of eyes/Ston_under_gravestone.wav</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>48</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>23.509145833333335</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{9522ad03-76ec-448d-8fdd-e3036d452f50}</destination>
+		</relationship>
+	</object>
+</objects>

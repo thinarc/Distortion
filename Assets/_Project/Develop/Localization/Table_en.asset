@@ -1,0 +1,150 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9620f8c34305754d8cc9a7e49e852d9, type: 3}
+  m_Name: Table_en
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.StringTable
+  m_LocaleId:
+    m_Code: en
+  m_SharedData: {fileID: 11400000, guid: 8e16152caea97b3439c66f1db997e20e, type: 2}
+  m_Metadata:
+    m_Items: []
+  m_TableData:
+  - m_Id: 42900032315392
+    m_Localized: Start game
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42987156398080
+    m_Localized: Exit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42938116595712
+    m_Localized: Credits
+    m_Metadata:
+      m_Items: []
+  - m_Id: 49791768715264
+    m_Localized: Return
+    m_Metadata:
+      m_Items: []
+  - m_Id: 50668663463936
+    m_Localized: Continue
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77569775886336
+    m_Localized: photo
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6542829013688320
+    m_Localized: Space
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6606903277772800
+    m_Localized: '...
+
+      Zzz...
+
+      Just a minute...
+
+      Need some sleep...
+
+      Too
+      tired...
+
+      My head hurts...
+
+      Going to bed...
+
+      Just for a while...
+
+      I
+      need a break...
+
+      Can''t keep my eyes open...
+
+      A little rest...
+
+      Maybe
+      tomorrow...'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6607070307540992
+    m_Localized: '...
+
+      Deep breaths...
+
+      Fresh air...
+
+      Just a moment...
+
+      A
+      little better...
+
+      It''s stuffy in here...
+
+      Need some air...
+
+      Take
+      it easy...
+
+      Clear my head...
+
+      Slow down...
+
+      That helps...
+
+      Feeling
+      better...'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6607126242779136
+    m_Localized: '...
+
+      Taking pills...
+
+      One more pill...
+
+      Just
+      a minute...
+
+      This should help...
+
+      Give it a moment...
+
+      Need
+      something...
+
+      It''ll pass...
+
+      Just rest...
+
+      Maybe that''ll
+      help...
+
+      Wait a little...
+
+      Feeling better...'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8004163798556672
+    m_Localized: Are you sure you want to <color=#081661>quit</color> ?
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8004228961263616
+    m_Localized: Yes
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8004249953755136
+    m_Localized: No
+    m_Metadata:
+      m_Items: []
+  references:
+    version: 2
+    RefIds: []

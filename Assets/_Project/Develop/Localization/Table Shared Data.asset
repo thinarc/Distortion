@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5b11a58205ec3474ca216360e9fa74a8, type: 3}
+  m_Name: Table Shared Data
+  m_EditorClassIdentifier: Unity.Localization::UnityEngine.Localization.Tables.SharedTableData
+  m_TableCollectionName: Table
+  m_TableCollectionNameGuidString: 8e16152caea97b3439c66f1db997e20e
+  m_Entries:
+  - m_Id: 42900032315392
+    m_Key: menu.play
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42938116595712
+    m_Key: menu.credits
+    m_Metadata:
+      m_Items: []
+  - m_Id: 42987156398080
+    m_Key: menu.exit
+    m_Metadata:
+      m_Items: []
+  - m_Id: 49791768715264
+    m_Key: menu.return
+    m_Metadata:
+      m_Items: []
+  - m_Id: 50668663463936
+    m_Key: 'menu.continue
+
+'
+    m_Metadata:
+      m_Items: []
+  - m_Id: 77569775886336
+    m_Key: stats.suffix
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6542829013688320
+    m_Key: effect.text
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6606903277772800
+    m_Key: rest.sleep
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6607070307540992
+    m_Key: rest.breath
+    m_Metadata:
+      m_Items: []
+  - m_Id: 6607126242779136
+    m_Key: rest.chemical
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8004163798556672
+    m_Key: quit.notice
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8004228961263616
+    m_Key: quit.y
+    m_Metadata:
+      m_Items: []
+  - m_Id: 8004249953755136
+    m_Key: quit.n
+    m_Metadata:
+      m_Items: []
+  m_Metadata:
+    m_Items: []
+  m_KeyGenerator:
+    rid: 422208297430155651
+  references:
+    version: 2
+    RefIds:
+    - rid: 422208297430155651
+      type: {class: DistributedUIDGenerator, ns: UnityEngine.Localization.Tables, asm: Unity.Localization}
+      data:
+        m_CustomEpoch: 1786352413047
