@@ -1,6 +1,8 @@
 using System;
 using System.ComponentModel;
 using _Project.Develop.Sound;
+using _Project.Develop.UI.HUD;
+using UnityEngine;
 
 namespace _Project.Develop.Anomaly
 {
@@ -80,7 +82,8 @@ namespace _Project.Develop.Anomaly
                     break;
                 case 6:
                 case 7:
-                    throw new WarningException("Downgrade from ending?");
+                    Debug.LogWarning("Downgrade from ending?" + $" {G.Get<UIBar>().Value}");
+                    break;
             }
         }
 

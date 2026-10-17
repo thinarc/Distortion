@@ -90,6 +90,12 @@ namespace _Project.Develop.UI.Cursor
                 (CursorMode.Tool, CursorState.Click) => toolClick,
                 _ => defaultIdle
             };
+
+            _cursorImage.rectTransform.anchoredPosition = _mode switch
+            {
+                CursorMode.Tool => new Vector2(0f, -10f),
+                _ => new Vector2(40f, -60f)
+            };
         }
 
         private void AnimateState()

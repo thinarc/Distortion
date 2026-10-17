@@ -20,9 +20,11 @@ namespace _Project.Develop.Editing
 
         [SerializeField, Space(5)] private Button[] buttons;
 
-        [SerializeField, Space(5)] private RectTransform strikesContainer;
+        [SerializeField, Space(5)] private EditingChecklist checklist;
         
         private CanvasGroup _buttonsGroup;
+        
+        public EditingChecklist Checklist => checklist;
         
         public CanvasGroup SpotsGroup => spotsGroup;
         
@@ -54,12 +56,6 @@ namespace _Project.Develop.Editing
         {
             dust = dustPrefabs;
             dirt = dirtPrefabs;
-        }
-
-        public void GetStrikes(out Image[] strikes, out EditingChecklist checklist)
-        {
-            strikes = strikesContainer.GetComponentsInChildren<Image>(true);
-            checklist = strikesContainer.GetComponentInParent<EditingChecklist>(true);
         }
 
         public void BindButtons(UnityAction acceptMethod, UnityAction rejectMethod)
