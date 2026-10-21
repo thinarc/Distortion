@@ -10,6 +10,31 @@ namespace _Project.Develop.Switch.Scenes
     {
         [SerializeField, Space(5)] private Image thingsButton;
         [SerializeField] private CanvasGroup stats;
+
+        public override void Init()
+        {
+            base.Init();
+            
+            var eventBus = G.Get<EventBus>();
+            eventBus.PreSceneReset += OnReset;
+            return;
+
+            void OnReset()
+            {
+                stats.gameObject.SetActive(false);
+                eventBus.PreSceneReset -= OnReset;
+                
+                G.Get<EventBus>().Resume += OnResume;
+            }
+            
+            void OnResume()
+            {
+                stats.gameObject.SetActive(true);
+                G.Get<EventBus>().Resume -= OnResume;
+                
+                eventBus.PreSceneReset += OnReset;
+            }
+        }
         
         public override async UniTask Show()
         {

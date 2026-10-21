@@ -29,6 +29,7 @@ namespace _Project.Develop
         public Action Pause;
         public Action Resume;
 
+        public Action PreSceneReset;
         public Action SceneReset;
         public Action SceneReady;
         

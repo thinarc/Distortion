@@ -84,6 +84,7 @@ namespace _Project.Develop.UI.Menus
 
         private async UniTaskVoid OnPassNightAsync(int completedNights)
         {
+            G.Get<EventBus>().PreSceneReset?.Invoke();
             G.Get<EventBus>().Pause?.Invoke();
             G.Get<UICursor>().Hide();
             
@@ -147,6 +148,7 @@ namespace _Project.Develop.UI.Menus
         private async UniTaskVoid OnGoodEndAsync()
         {
             G.Get<SoundController>().SetEndingState(true);
+            G.Get<EventBus>().PreSceneReset?.Invoke();
             G.Get<EventBus>().Pause?.Invoke();
             G.Get<UICursor>().Hide();
             G.Get<SoundController>().MusicHandle.StopMusic(); //Стоп сразу как сцена кончилась.Синхрон
@@ -166,7 +168,7 @@ namespace _Project.Develop.UI.Menus
                 G.Get<InputController>().Player.Player.MousePosition.performed -= OnMousePosition;
                 
                 G.Get<EventBus>().SceneReset?.Invoke();
-                await UniTask.Delay(300);
+                await UniTask.Delay(600);
             
                 //G.Get<SoundController>().EndingHandle.PlayEndingStinger(EndingType.ImDone);
                 // расскоментируй если звук нужен раньше картинки
@@ -206,6 +208,7 @@ namespace _Project.Develop.UI.Menus
         {
             G.Get<SoundController>().MusicHandle.StopMusic();
             G.Get<SoundController>().SetEndingState(true);
+            G.Get<EventBus>().PreSceneReset?.Invoke();
             G.Get<EventBus>().Pause?.Invoke();
             G.Get<UICursor>().Hide();
             
@@ -281,6 +284,7 @@ namespace _Project.Develop.UI.Menus
 
         private async UniTaskVoid OnBadEndAsync()
         {
+            G.Get<EventBus>().PreSceneReset?.Invoke();
             G.Get<EventBus>().Pause?.Invoke();
             G.Get<UICursor>().Hide();
             G.Get<SoundController>().MusicHandle.StopMusic(); //Стоп сразу как сцена кончилась.Синхрон
