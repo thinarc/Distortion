@@ -73,6 +73,22 @@ MonoBehaviour:
     m_Key: list.strings
     m_Metadata:
       m_Items: []
+  - m_Id: 28191333989474304
+    m_Key: hint.1
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28191357716652032
+    m_Key: hint.2
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28191374611308544
+    m_Key: hint.3
+    m_Metadata:
+      m_Items: []
+  - m_Id: 28191389039714304
+    m_Key: hint.4
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

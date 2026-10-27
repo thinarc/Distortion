@@ -47,6 +47,8 @@ namespace _Project.Develop.UI.Menus
 
         private bool _isPause;
 
+        public bool IsGameplayActive => _started && !_opened;
+
         private void Start()
         {
             _input = G.Get<InputController>();
