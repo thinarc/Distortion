@@ -3,6 +3,7 @@ using _Project.Develop.Input;
 using _Project.Develop.UI;
 using _Project.Develop.UI.Cursor;
 using UnityEngine;
+using PrimeTween;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -22,6 +23,10 @@ namespace _Project.Develop.Editing.Tools
         
         protected Canvas Canvas => _canvas;
         
+        private Vector3 _initialPosition;
+        private Quaternion _initialRotation;
+        private Vector3 _initialScale;
+
         protected bool Picked { get; private set; }
 
         protected bool CanChangePhotoEffect { get; set; } = true;
@@ -31,6 +36,10 @@ namespace _Project.Develop.Editing.Tools
 
         protected virtual void Start()
         {
+            _initialPosition = transform.localPosition;
+            _initialRotation = transform.localRotation;
+            _initialScale = transform.localScale;
+            G.Get<EventBus>().PreSceneReset += ResetTool;
             _image = GetComponent<Image>();
             _canvas = GetComponentInParent<Canvas>();
             
@@ -42,6 +51,16 @@ namespace _Project.Develop.Editing.Tools
             G.Get<EventBus>().EndEditing += OnEndEditing;
             
             G.Get<InputController>().Player.Player.MousePosition.performed += OnMousePosition;
+        }
+
+        private void ResetTool()
+        {
+            if (Picked) Drop(default);
+            Tween.StopAll(transform);
+            transform.localPosition = _initialPosition;
+            transform.localRotation = _initialRotation;
+            transform.localScale = _initialScale;
+            OnEndEditing();
         }
 
         private void OnStartEditing()
@@ -124,6 +143,7 @@ namespace _Project.Develop.Editing.Tools
 
         protected virtual void OnDestroy()
         {
+            G.Get<EventBus>().PreSceneReset -= ResetTool;
             G.Get<EventBus>().StartEditing -= OnStartEditing;
             G.Get<EventBus>().SpotsFinished -= OnSpotsFinished;
             G.Get<EventBus>().EndEditing -= OnEndEditing;

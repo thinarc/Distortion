@@ -84,6 +84,9 @@ namespace _Project.Develop.Editing.Tools
         protected override void Drop(InputAction.CallbackContext obj)
         {
             base.Drop(obj);
+            _isOnPhoto = false;
+            _isOnSpot = false;
+            _spawnInterval = 0f;
             _sprayParticles.Stop();
             G.Get<SoundController>().ActionHandle.StopSpray();
         }

@@ -89,6 +89,14 @@ MonoBehaviour:
     m_Key: hint.4
     m_Metadata:
       m_Items: []
+  - m_Id: 32134661562949632
+    m_Key: tip.checklist
+    m_Metadata:
+      m_Items: []
+  - m_Id: 32134690595921920
+    m_Key: tip.photo
+    m_Metadata:
+      m_Items: []
   m_Metadata:
     m_Items: []
   m_KeyGenerator:

@@ -1,5 +1,6 @@
 using _Project.Develop.Anomaly;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 using UnityEngine.EventSystems;
 using UnityEngine.Localization;
 using UnityEngine.UI;
@@ -28,6 +29,39 @@ namespace _Project.Develop.Editing.Photo
         public int Number => number;
 
         private Image _image;
+        private Sprite _initialFront;
+        private Sprite _initialNormal;
+        private Vector3 _initialPosition;
+        private Vector3 _initialScale;
+        private Quaternion _initialRotation;
+
+        public void CaptureInitialState()
+        {
+            _initialFront = Image.sprite;
+            _initialNormal = normalFront;
+            var effects = GetComponentInParent<_Project.Develop.UI.UIEffects>(true);
+            _initialPosition = effects.transform.localPosition;
+            _initialScale = effects.transform.localScale;
+            _initialRotation = effects.transform.localRotation;
+        }
+
+        public void ResetPhoto()
+        {
+            Ano?.DeactivateSource().Forget();
+            Ano = null;
+            normalFront = _initialNormal;
+            Image.sprite = _initialFront;
+            var color = Image.color;
+            color.a = 0f;
+            Image.color = color;
+            var effects = GetComponentInParent<_Project.Develop.UI.UIEffects>(true);
+            effects.transform.localPosition = _initialPosition;
+            effects.transform.localScale = _initialScale;
+            effects.transform.localRotation = _initialRotation;
+            effects.SetEffect(_Project.Develop.UI.UIEffectType.HoverMove, false);
+            effects.enabled = false;
+            gameObject.SetActive(false);
+        }
 
         public Image Image
         {

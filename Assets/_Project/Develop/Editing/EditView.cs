@@ -3,6 +3,7 @@ using _Project.Develop.Anomaly;
 using _Project.Develop.Editing.Photo;
 using _Project.Develop.Switch.Scenes;
 using UnityEngine;
+using PrimeTween;
 using UnityEngine.Events;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -36,20 +37,66 @@ namespace _Project.Develop.Editing
         public List<EditingPhoto> CorrectPhotos => _correctPhotos;
 
         private BaseLocation _discardLocation;
+        private EditingPhoto[] _allPhotos;
+        private EditingPhoto _currentPhoto;
+        private RectTransform _dust;
+        private RectTransform _dirt;
+        private RectTransform _shine;
+
+        public void CompletePhoto() => _currentPhoto = null;
+
+        public void StopEditing()
+        {
+            foreach (var t in GetComponentsInChildren<Transform>(true)) Tween.StopAll(t);
+            foreach (var image in GetComponentsInChildren<Image>(true)) Tween.StopAll(image);
+            Tween.StopAll(spotsGroup);
+            Tween.StopAll(_buttonsGroup);
+            _buttonsGroup.alpha = 0f;
+            _buttonsGroup.interactable = false;
+            _buttonsGroup.blocksRaycasts = false;
+            checklist.StopEditing();
+        }
+
+        public void ResetEditing(bool fullReset)
+        {
+            if (fullReset)
+            {
+                _correctPhotos.Clear();
+                _correctPhotos.AddRange(_allPhotos);
+            }
+            else if (_currentPhoto != null && _currentPhoto.Ano == null && !_correctPhotos.Contains(_currentPhoto))
+                _correctPhotos.Add(_currentPhoto);
+
+            foreach (var photo in GetComponentsInChildren<EditingPhoto>(true)) photo.ResetPhoto();
+            _currentPhoto = null;
+            _anoPhotos.Clear();
+            spotsGroup.alpha = 0f;
+            GetSpots(out var dust, out var dirt, out var shine);
+            foreach (var container in new[] { dust, dirt, shine })
+                foreach (Transform child in container) Destroy(child.gameObject);
+            checklist.ResetChecklist(fullReset);
+        }
 
         public void Init()
         {
-            _correctPhotos.AddRange(correctRect.GetComponentsInChildren<EditingPhoto>(true));
+            _allPhotos = correctRect.GetComponentsInChildren<EditingPhoto>(true);
+            _correctPhotos.AddRange(_allPhotos);
+            foreach (var photo in GetComponentsInChildren<EditingPhoto>(true)) photo.CaptureInitialState();
             _buttonsGroup = buttons[0].GetComponentInParent<CanvasGroup>(true);
         }
 
         public void GetSpots(out RectTransform dust, out RectTransform dirt, out RectTransform shine)
         {
-            var containers = spotsGroup.GetComponentsInChildren<RectTransform>();
-            
-            dust = containers[1];
-            dirt = containers[2];
-            shine = containers[3];
+            if (_dust == null)
+            {
+                var containers = spotsGroup.GetComponentsInChildren<RectTransform>(true);
+                _dust = containers[1];
+                _dirt = containers[2];
+                _shine = containers[3];
+            }
+            dust = _dust;
+            dirt = _dirt;
+            shine = _shine;
         }
 
         public void GetPrefabs(out GameObject[] dust, out GameObject[] dirt)
@@ -75,9 +122,11 @@ namespace _Project.Develop.Editing
             }
             else
             {
+                if (_correctPhotos.Count == 0) { photo = null; return; }
                 photo = _correctPhotos[Random.Range(0, _correctPhotos.Count)];
                 _correctPhotos.Remove(photo);
             }
+            _currentPhoto = photo;
         }
 
         public void AddAnomaly(AnomalyObject ano, BaseLocation discardLocation)

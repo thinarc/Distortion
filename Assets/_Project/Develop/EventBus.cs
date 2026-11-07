@@ -29,6 +29,8 @@ namespace _Project.Develop
         public Action Pause;
         public Action Resume;
 
+        // A new run clears progress; ordinary SceneReset only prepares the next night.
+        public Action RunReset;
         public Action PreSceneReset;
         public Action SceneReset;
         public Action SceneReady;

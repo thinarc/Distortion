@@ -23,6 +23,9 @@ namespace _Project.Develop.UI.Menus
         private SwitchModel _switchModel;
         private UIStats _stats;
 
+        private int _revision;
+        private AnxietySource _source;
+        private AnxietyModifier _modifier;
         private bool _rest;
         private bool _disabled;
         
@@ -38,7 +41,7 @@ namespace _Project.Develop.UI.Menus
             _group = GetComponent<CanvasGroup>();
             _tmp = GetComponentInChildren<TextMeshProUGUI>();
 
-            G.Get<EventBus>().GoodEnd += OnSceneReset;
+            G.Get<EventBus>().PreSceneReset += OnSceneReset;
             G.Get<EventBus>().SceneReady += OnSceneReady;
         }
         
@@ -50,6 +53,17 @@ namespace _Project.Develop.UI.Menus
 
         private void OnSceneReset()
         {
+            _revision++;
+            _source?.Dispose();
+            _modifier?.Dispose();
+            _source = null;
+            _modifier = null;
+            Tween.StopAll(_group);
+            Tween.StopAll(_tmp);
+            _group.alpha = 0f;
+            _group.blocksRaycasts = false;
+            _tmp.GetComponent<TMPWriter>().StopWriter();
+            _tmp.text = "";
             _rest = false;
             _disabled = true;
         }
@@ -69,8 +83,9 @@ namespace _Project.Develop.UI.Menus
         {
             if (_rest || _disabled) return;
 
-            var source = new AnxietySource(-15f);
-            var modifier = new AnxietyModifier(multiplier);
+            var revision = _revision;
+            var source = _source = new AnxietySource(-15f);
+            var modifier = _modifier = new AnxietyModifier(multiplier);
             _rest = true;
             
             G.Get<EventBus>().EffectApply?.Invoke();
@@ -78,8 +93,10 @@ namespace _Project.Develop.UI.Menus
             var isStreetRest = restType == RestDialog.RestType.Breath;
             
             if (!isStreetRest) await G.Get<SoundController>().PauseForRest();
+            if (revision != _revision) return;
             
             await Tween.Alpha(_group, endValue: 1f, duration: 1f, ease: Ease.InOutSine);
+            if (revision != _revision) return;
             _group.blocksRaycasts = true;
             
             if (restType == RestType.Chemical)
@@ -101,6 +118,7 @@ namespace _Project.Develop.UI.Menus
             };
 
             await UniTask.Delay(delay);
+            if (revision != _revision) return;
 
             var writer = _tmp.GetComponent<TMPWriter>();
             writer.DefaultDelays.SetDelay(Random.Range(0.1f, 0.2f));
@@ -120,9 +138,13 @@ namespace _Project.Develop.UI.Menus
             if (!Mathf.Approximately(_tmp.color.a, 1))
                 _ = Tween.Alpha(_tmp, endValue: 1f, duration: 0);
 
-            await _tmp.GetComponent<TMPWriter>().OnFinishWriter;
+            await UniTask.Yield();
+            if (revision != _revision) return;
+            await UniTask.WaitUntil(() => revision != _revision || !writer.IsWriting);
+            if (revision != _revision) return;
 
             await UniTask.Delay(Random.Range(1200, 2600));
+            if (revision != _revision) return;
             
             _ = _switchModel.GoToLocation("Workplace");
             source.Dispose();
@@ -133,6 +155,7 @@ namespace _Project.Develop.UI.Menus
             _ = Tween.Alpha(_tmp, endValue: 0f, duration: 0.1f, ease: Ease.InOutSine);
 
             await Tween.Alpha(_group, endValue: 0f, duration: 0.4f, ease: Ease.InOutSine);
+            if (revision != _revision) return;
             _group.blocksRaycasts = false;
             
             _tmp.text = "";
@@ -143,7 +166,7 @@ namespace _Project.Develop.UI.Menus
 
         private void OnDestroy()
         {
-            G.Get<EventBus>().GoodEnd -= OnSceneReset;
+            G.Get<EventBus>().PreSceneReset -= OnSceneReset;
             G.Get<EventBus>().SceneReady -= OnSceneReady;
         }
     }

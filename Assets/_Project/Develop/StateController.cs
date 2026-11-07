@@ -4,6 +4,8 @@ namespace _Project.Develop
     {
         private IState _currentState;
 
+        public void Reset() => _currentState = null;
+
         public void ChangeState(IState state)
         {
             _currentState?.Exit();

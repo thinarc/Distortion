@@ -26,14 +26,19 @@ namespace _Project.Develop.Editing.States
         
         public async UniTask Enter()
         {
+            var controller = G.Get<EditController>();
+            var revision = controller.Revision;
             G.Get<EventBus>().PhotoDown += OnPhotoDown;
             await UniTask.CompletedTask;
+            if (revision != controller.Revision) return;
         }
 
         private void OnPhotoDown() => G.Get<EditController>().StateController.ChangeState(G.Get<EditController>().DecisionState.WithPhoto(_photoToRotate));
 
         public async UniTask Exit()
         {
+            var controller = G.Get<EditController>();
+            var revision = controller.Revision;
             G.Get<EventBus>().PhotoDown -= OnPhotoDown;
             G.Get<EventBus>().EndEditing?.Invoke();
             
@@ -45,11 +50,13 @@ namespace _Project.Develop.Editing.States
             _effects.enabled = true;
             
             await Tween.Rotation(_effects.transform, endValue: new Vector3(0f, 90f, 0f), duration: 0.15f, ease: Ease.InQuad);
+            if (revision != controller.Revision) return;
             
             _photoToRotate.Image.sprite = _photoToRotate.BackdropPhoto;
             _editView.SpotsGroup.alpha = 0;
 
             await Tween.Rotation(_effects.transform, endValue: new Vector3(0f, 180f, 0f), duration: 0.25f, ease: Ease.OutQuad);
+            if (revision != controller.Revision) return;
         }
 
         public void Dispose()

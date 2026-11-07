@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using _Project.Develop.Anomaly;
 using PrimeTween;
 using UnityEngine;
 using UnityEngine.UI;
@@ -14,6 +16,9 @@ namespace _Project.Develop.UI.Cursor
         [SerializeField] private Sprite defaultClick;
         [SerializeField] private Sprite toolIdle;
         [SerializeField] private Sprite toolClick;
+        [SerializeField] private Sprite anomalySprite;
+
+        private readonly HashSet<AnomalyObject> _activeMouseAnomalies = new();
         
         private Image _cursorImage;
 
@@ -35,6 +40,7 @@ namespace _Project.Develop.UI.Cursor
             UnityEngine.Cursor.lockState = CursorLockMode.Confined;
             UnityEngine.Cursor.visible = false;
 
+            G.Get<EventBus>().SceneReset += OnSceneReset;
             G.Get<EventBus>().Pause += OnPause;
             G.Get<EventBus>().Resume += OnResume;
         }
@@ -82,7 +88,9 @@ namespace _Project.Develop.UI.Cursor
 
         private void UpdateSprite()
         {
-            _cursorImage.sprite = (_mode, _state) switch
+            _cursorImage.sprite = _activeMouseAnomalies.Count > 0 && anomalySprite != null
+                ? anomalySprite
+                : (_mode, _state) switch
             {
                 (CursorMode.Default, CursorState.Idle) => defaultIdle,
                 (CursorMode.Default, CursorState.Click) => defaultClick,
@@ -91,11 +99,21 @@ namespace _Project.Develop.UI.Cursor
                 _ => defaultIdle
             };
 
-            _cursorImage.rectTransform.anchoredPosition = _mode switch
+            _cursorImage.rectTransform.anchoredPosition = _activeMouseAnomalies.Count > 0 && anomalySprite != null
+                ? new Vector2(25f, -60f)
+                : _mode switch
             {
                 CursorMode.Tool => new Vector2(0f, -10f),
                 _ => new Vector2(40f, -60f)
             };
+        }
+
+        public void SetMouseAnomalyActive(AnomalyObject anomaly, bool active)
+        {
+            if (active) _activeMouseAnomalies.Add(anomaly);
+            else _activeMouseAnomalies.Remove(anomaly);
+
+            if (_cursorImage != null) UpdateSprite();
         }
 
         private void AnimateState()
@@ -106,6 +124,16 @@ namespace _Project.Develop.UI.Cursor
         
         private CursorMode _pastMode;
         
+        private void OnSceneReset()
+        {
+            _activeMouseAnomalies.Clear();
+            _pastMode = CursorMode.Default;
+            _state = CursorState.Idle;
+            Tween.StopAll(transform);
+            transform.localScale = Vector3.one;
+            SetDefaultMode();
+        }
+
         private void OnPause()
         {
             _pastMode = _mode;
@@ -125,6 +153,7 @@ namespace _Project.Develop.UI.Cursor
 
         private void OnDestroy()
         {
+            G.Get<EventBus>().SceneReset -= OnSceneReset;
             G.Get<EventBus>().Pause -= OnPause;
             G.Get<EventBus>().Resume -= OnResume;
         }

@@ -33,18 +33,18 @@ namespace _Project.Develop.Editing.States
         
         public async UniTask Enter()
         {
+            var controller = G.Get<EditController>();
+            var revision = controller.Revision;
             _effects.SetEffect(UIEffectType.PressScale, false);
             _effects.SetEffect(UIEffectType.HoverMove, true);
             
-            if (!_firstEnter) await UniTask.Delay(400);
-            else
-            {
-                await UniTask.Delay(800);
-                _firstEnter = true;
-            }
+            await UniTask.Delay(_firstEnter ? 800 : 400);
+            if (revision != controller.Revision) return;
+            _firstEnter = true;
             
             _ = Tween.Alpha(_editView.ButtonsGroup, endValue: 1f, duration: 0.4f, ease: Ease.InBack);
             await UniTask.Delay(200);
+            if (revision != controller.Revision) return;
             
             _editView.ButtonsGroup.interactable = true;
             _editView.ButtonsGroup.blocksRaycasts = true;
@@ -55,6 +55,8 @@ namespace _Project.Develop.Editing.States
         
         private async UniTaskVoid OnAcceptPhoto()
         {
+            var controller = G.Get<EditController>();
+            var revision = controller.Revision;
             G.Get<SoundController>().UIHandle.PlayClick();
             
             OnChoosePhoto();
@@ -65,7 +67,9 @@ namespace _Project.Develop.Editing.States
             var anchorPos = new Vector2(effectsRect.anchoredPosition.x + 45, effectsRect.anchoredPosition.y);
             
             await Tween.UIAnchoredPosition(effectsRect, anchorPos, duration: 0.9f, ease: Ease.InBack);
+            if (revision != controller.Revision) return;
             await Tween.Alpha(_photoToDecision.Image, endValue: 0f, duration: 0.3f, ease: Ease.InBack);
+            if (revision != controller.Revision) return;
             
             OnEndAnimate();
             
@@ -74,6 +78,7 @@ namespace _Project.Develop.Editing.States
             {
                 _photoToDecision.Ano.PlaySound(look: true);
                 await _photoToDecision.Ano.ActivateSourceTask();
+                if (revision != controller.Revision) return;
                 
                 _photoToDecision.Ano.StopSound(look: true);
                 
@@ -84,6 +89,8 @@ namespace _Project.Develop.Editing.States
 
         private async UniTaskVoid OnRejectPhoto()
         {
+            var controller = G.Get<EditController>();
+            var revision = controller.Revision;
             G.Get<SoundController>().UIHandle.PlayExit();
             OnChoosePhoto();
             
@@ -91,6 +98,7 @@ namespace _Project.Develop.Editing.States
 
             _ = Tween.Rotation(_effects.transform, endValue: new Vector3(0f, 0f, direction * 10f), duration: 0.2f, ease: Ease.OutQuad);
             await Tween.Alpha(_photoToDecision.Image, endValue: 0f, duration: 0.3f, ease: Ease.OutQuad);
+            if (revision != controller.Revision) return;
             
             OnEndAnimate();
             

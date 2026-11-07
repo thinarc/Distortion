@@ -30,6 +30,8 @@ namespace _Project.Develop.Sound
 
         private Bus _masterBus;
         private Bus _pauseBus;
+        private Tween _restTransition;
+        private int _restRevision;
         
         // Флаг для блокировки музыки во время концовки
         private bool _isEndingSequence;
@@ -109,14 +111,18 @@ namespace _Project.Develop.Sound
 
         public async UniTask PauseForRest()
         {
-            await Tween.Custom(1f, 0f, 1f, onValueChange: v => _pauseBus.setVolume(v));
-            _pauseBus.setPaused(true);
+            var revision = _restRevision;
+            _restTransition = Tween.Custom(1f, 0f, 1f, onValueChange: v => _pauseBus.setVolume(v));
+            await _restTransition;
+            if (revision == _restRevision) _pauseBus.setPaused(true);
         }
 
         public async UniTask ResumeForRest()
         {
             _pauseBus.setPaused(false);
-            await Tween.Custom(0f, 1f, 1f, onValueChange: v => _pauseBus.setVolume(v));
+            _restTransition.Stop();
+            _restTransition = Tween.Custom(0f, 1f, 1f, onValueChange: v => _pauseBus.setVolume(v));
+            await _restTransition;
         }
 
 
@@ -124,6 +130,12 @@ namespace _Project.Develop.Sound
 
         private void OnSceneReset()
         {
+            _restRevision++;
+            _restTransition.Stop();
+            _pauseBus.setPaused(false);
+            _pauseBus.setVolume(1f);
+            ActionHandle.StopSpray();
+            ActionHandle.StopCurtainImmediate();
             Debug.Log("[SoundController] SceneReset — останавливаю звук");
 
             MusicHandle.StopMusic();

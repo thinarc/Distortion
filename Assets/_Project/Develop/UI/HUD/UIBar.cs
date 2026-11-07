@@ -35,6 +35,7 @@ namespace _Project.Develop.UI.HUD
         private bool _disabled;
         
         private bool _showPills;
+        private int _revision;
 
         public bool Showing { get; private set; }
 
@@ -56,6 +57,8 @@ namespace _Project.Develop.UI.HUD
             
             var eventBus = G.Get<EventBus>();
             
+            eventBus.PreSceneReset += ResetHud;
+            eventBus.RunReset += ResetPills;
             eventBus.Pause += OnPause;
             eventBus.Resume += OnResume;
             eventBus.EffectApply += OnPause;
@@ -89,6 +92,36 @@ namespace _Project.Develop.UI.HUD
             G.Get<RestDialog>().ApplyRest(3f, RestDialog.RestType.Chemical).Forget();
         }
         
+        private void ResetPills()
+        {
+            _availablePills = _pillsImages.Count;
+            foreach (var pill in _pillsImages)
+            {
+                Tween.StopAll(pill);
+                var color = pill.color;
+                color.a = 1f;
+                pill.color = color;
+            }
+        }
+
+        private void ResetHud()
+        {
+            _revision++;
+            _pillsGroupTween.Stop();
+            Tween.StopAll(pillsGroup);
+            Tween.StopAll(pillsGroup.transform);
+            Tween.StopAll(_group);
+            _readyPill = false;
+            _disabled = true;
+            Showing = false;
+            _showPills = false;
+            SetValue(0f);
+            _group.alpha = 0f;
+            pillsGroup.alpha = 0f;
+            pillsGroup.transform.localScale = Vector3.one;
+            pillsGroup.GetComponent<RectTransform>().anchoredPosition = _pillsGroupDefaultPos;
+        }
+
         private void OnSpacePerformed(InputAction.CallbackContext obj)
         {
             TryApplyPillAsync().Forget();
@@ -113,7 +146,9 @@ namespace _Project.Develop.UI.HUD
                 return;
             }
 
+            var revision = _revision;
             await UniTask.Delay(200);
+            if (revision != _revision || !CanApplyPill()) return;
             if (G.Get<InputController>().Player.Player.Space.ReadValue<float>() == 0f) return;
             
             _ = Tween.Alpha(pillsGroup, endValue: 1f, duration: _currentTime, startDelay: 0.1f, ease: _currentEase);
@@ -126,6 +161,7 @@ namespace _Project.Develop.UI.HUD
                 duration: Random.Range(2f, 3f)
             ).OnComplete(() =>
             {
+                if (revision != _revision) return;
                 _readyPill = true;
 
                 var randNoise = Random.Range(1.2f, 4.5f);
@@ -136,6 +172,7 @@ namespace _Project.Develop.UI.HUD
                     1f,
                     _ =>
                     {
+                        if (revision != _revision) return;
                         pillsGroup.GetComponent<RectTransform>().anchoredPosition =
                             _pillsGroupDefaultPos +
                             Random.insideUnitCircle * randNoise;
@@ -150,12 +187,14 @@ namespace _Project.Develop.UI.HUD
                 _pillsGroupTween.duration,
                 _ =>
                 {
+                    if (revision != _revision) return;
                     pillsGroup.GetComponent<RectTransform>().anchoredPosition =
                         _pillsGroupDefaultPos +
                         Random.insideUnitCircle * 0.8f;
                 }
             ).OnComplete(() =>
             {
+                if (revision != _revision) return;
                 pillsGroup.GetComponent<RectTransform>().anchoredPosition = _pillsGroupDefaultPos;
             });
         }
@@ -239,6 +278,8 @@ namespace _Project.Develop.UI.HUD
         {
             var eventBus = G.Get<EventBus>();
             
+            eventBus.PreSceneReset -= ResetHud;
+            eventBus.RunReset -= ResetPills;
             eventBus.Pause -= OnPause;
             eventBus.Resume -= OnResume;
             eventBus.EffectApply -= OnPause;

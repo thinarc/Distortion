@@ -37,6 +37,7 @@ namespace _Project.Develop.Editing.States
         private static void OnChecklistDown()
         {
             G.Get<EventBus>().ChecklistDown -= OnChecklistDown;
+            if (G.Get<EditController>().Resetting) return;
             
             G.Get<EditController>().StateController.ChangeState(G.Get<EditController>().EditingState);
         }

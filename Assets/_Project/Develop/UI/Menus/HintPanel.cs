@@ -10,10 +10,12 @@ namespace _Project.Develop.UI.Menus
         [SerializeField] private UnityEngine.UI.Button hintPanelButton;
         [SerializeField] private CanvasGroup overlayGroup;
         [SerializeField, Min(0.01f)] private float fadeDuration = 0.2f;
+        [SerializeField, Min(0.01f)] private float panelTransitionDuration = 0.22f;
         [SerializeField, Min(0f)] private float hintAppearDelay = 0.35f;
         [SerializeField, Min(0f)] private float hintGameplayDuration = 30f;
 
-        private Tween _fadeTween;
+        private Sequence _fadeTween;
+        private Vector3 _panelScale;
         private Sequence _hintSequence;
         private CanvasGroup _hintGroup;
         private Vector3 _hintScale;
@@ -38,6 +40,7 @@ namespace _Project.Develop.UI.Menus
             }
 
             _hintScale = hintButton.transform.localScale;
+            _panelScale = hintPanelButton.transform.localScale;
             _hintRotation = hintButton.transform.localRotation;
             _hintGroup = hintButton.GetComponent<CanvasGroup>();
             if (_hintGroup == null) _hintGroup = hintButton.gameObject.AddComponent<CanvasGroup>();
@@ -46,6 +49,40 @@ namespace _Project.Develop.UI.Menus
             if (_bar != null) _barGroup = _bar.GetComponent<CanvasGroup>();
 
             ResetPanel();
+        }
+
+        private void Start()
+        {
+            G.Get<EventBus>().RunReset += ResetRun;
+            G.Get<EventBus>().PreSceneReset += StopForReset;
+        }
+
+        private void StopForReset()
+        {
+            if (_pausedForHint) Time.timeScale = _previousTimeScale;
+            _pausedForHint = false;
+            StopHintAnimation();
+            ResetPanel();
+        }
+
+        private void ResetRun()
+        {
+            StopHintAnimation();
+            ResetPanel();
+            _gameplayTime = 0f;
+            _expired = false;
+            _appeared = false;
+            _hintAlpha = 0f;
+            _hintGroup.alpha = 0f;
+            if (_pausedForHint) Time.timeScale = _previousTimeScale;
+            _pausedForHint = false;
+            hintButton.gameObject.SetActive(false);
+        }
+
+        private void OnDestroy()
+        {
+            G.Get<EventBus>().RunReset -= ResetRun;
+            G.Get<EventBus>().PreSceneReset -= StopForReset;
         }
 
         private void OnEnable()
@@ -125,11 +162,16 @@ namespace _Project.Develop.UI.Menus
                 .Group(Tween.LocalRotation(hintButton.transform,
                     _hintRotation * Quaternion.Euler(0f, 0f, -3f), 0.15f, Ease.OutCubic));
 
+            if (overlayGroup.alpha <= 0f)
+                hintPanelButton.transform.localScale = _panelScale * 0.92f;
             overlayGroup.gameObject.SetActive(true);
             overlayGroup.blocksRaycasts = true;
             overlayGroup.interactable = true;
-            _fadeTween = Tween.Alpha(overlayGroup, endValue: 1f, duration: fadeDuration,
-                ease: Ease.OutCubic, useUnscaledTime: true);
+            _fadeTween = Sequence.Create(useUnscaledTime: true)
+                .Chain(Tween.Alpha(overlayGroup, endValue: 1f, duration: panelTransitionDuration,
+                    ease: Ease.InQuad))
+                .Group(Tween.Scale(hintPanelButton.transform, _panelScale, panelTransitionDuration,
+                    Ease.OutCubic));
         }
 
         private void Hide()
@@ -146,8 +188,11 @@ namespace _Project.Develop.UI.Menus
                     .Chain(Tween.Scale(hintButton.transform, _hintScale, 0.15f, Ease.OutCubic))
                     .Group(Tween.LocalRotation(hintButton.transform, _hintRotation, 0.15f, Ease.OutCubic));
             }
-            _fadeTween = Tween.Alpha(overlayGroup, endValue: 0f, duration: fadeDuration,
-                    ease: Ease.InOutSine, useUnscaledTime: true)
+            _fadeTween = Sequence.Create(useUnscaledTime: true)
+                .Chain(Tween.Alpha(overlayGroup, endValue: 0f, duration: panelTransitionDuration,
+                    ease: Ease.OutQuad))
+                .Group(Tween.Scale(hintPanelButton.transform, _panelScale * 0.92f,
+                    panelTransitionDuration, Ease.InOutSine))
                 .OnComplete(() =>
                 {
                     overlayGroup.blocksRaycasts = false;
@@ -188,6 +233,7 @@ namespace _Project.Develop.UI.Menus
             if (overlayGroup == null) return;
 
             overlayGroup.alpha = 0f;
+            if (hintPanelButton != null) hintPanelButton.transform.localScale = _panelScale;
             overlayGroup.interactable = false;
             overlayGroup.blocksRaycasts = false;
         }

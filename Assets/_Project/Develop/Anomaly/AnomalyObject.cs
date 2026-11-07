@@ -7,6 +7,7 @@ using _Project.Develop.Sound.Handles;
 using static _Project.Develop.Sound.Handles.AmbientHandle;
 using _Project.Develop.Switch.Scenes;
 using _Project.Develop.UI;
+using _Project.Develop.UI.Cursor;
 using Cysharp.Threading.Tasks;
 using Sirenix.OdinInspector;
 using Sirenix.Utilities;
@@ -47,6 +48,7 @@ namespace _Project.Develop.Anomaly
         
         private float _currentLifetime;
         private bool _applied;
+        private int _revision;
 
         private bool _soundApplied;
 
@@ -103,6 +105,7 @@ namespace _Project.Develop.Anomaly
             {
                 _mouseTrackCts?.Cancel();
                 _mouseTrackCts = new CancellationTokenSource();
+                G.Get<UICursor>().SetMouseAnomalyActive(this, true);
                 InfluenceMouseLoop(_mouseTrackCts.Token).Forget();
                 return;
             }
@@ -114,7 +117,9 @@ namespace _Project.Develop.Anomaly
 
             if (applyType is ApplyType.Spawn or ApplyType.Command)
             {
+                var revision = _revision;
                 await G.Get<DarknessEffect>().ApplyEffect();
+                if (revision != _revision) return;
                 target.GetComponentInParent<BaseLocation>().RemoveAnomaly(this);
             }
             
@@ -146,6 +151,7 @@ namespace _Project.Develop.Anomaly
         
         public void Remove(params Sprite[] currentFrames)
         {
+            _revision++;
             switch (applyType)
             {
                 case ApplyType.Default:
@@ -185,6 +191,7 @@ namespace _Project.Develop.Anomaly
                 _mouseTrackCts?.Cancel();
                 _mouseTrackCts?.Dispose();
                 _mouseTrackCts = null;
+                G.Get<UICursor>().SetMouseAnomalyActive(this, false);
                 return;
             }
             
@@ -224,6 +231,12 @@ namespace _Project.Develop.Anomaly
             {
                 while (!token.IsCancellationRequested)
                 {
+                    if (Time.timeScale <= 0f)
+                    {
+                        await UniTask.Yield(PlayerLoopTiming.Update, token);
+                        continue;
+                    }
+
                     timeCounter += Time.deltaTime;
                     
                     if (timeCounter > 3f)

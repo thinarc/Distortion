@@ -165,6 +165,7 @@ namespace _Project.Develop.UI.Menus
         {
             G.Get<SoundController>().SetEndingState(false);
             ClearSaves();
+            G.Get<EventBus>().RunReset?.Invoke();
             CloseMenu();
             
             PlayerPrefs.SetInt("started-game", 1);

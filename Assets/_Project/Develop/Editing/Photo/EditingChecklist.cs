@@ -43,6 +43,39 @@ namespace _Project.Develop.Editing.Photo
         private bool _isRotating;
         
         private bool _rotated;
+        private int _revision;
+
+        public void StopEditing()
+        {
+            _revision++;
+            _numberToCrossOut = -1;
+            _isRotating = false;
+            _effects.SetEffect(UIEffectType.PressScale, false);
+            _toolTrigger.Disable();
+            if (_stringsEffects == null) return;
+            foreach (var effect in _stringsEffects) effect.enabled = false;
+            foreach (var trigger in _stringsTriggers) trigger.enabled = false;
+        }
+
+        public void ResetChecklist(bool fullReset)
+        {
+            if (fullReset)
+            {
+                Array.Clear(_strikesContained, 0, _strikesContained.Length);
+                _rotated = false;
+            }
+            _image.sprite = _rotated ? rotatedList : _baseList;
+            transform.localRotation = Quaternion.identity;
+            transform.localScale = Vector3.one;
+            for (var i = 0; i < 10; i++)
+            {
+                var index = i + (_rotated ? 10 : 0);
+                _strikes[i].fillAmount = index < _strikesContained.Length ? _strikesContained[index] : 0f;
+                if (_splitTexts != null) _strings[i].text = index < _splitTexts.Length ? _splitTexts[index] : "";
+            }
+        }
+
+        private void OnDestroy() => _revision++;
 
         private void Start()
         {
@@ -54,13 +87,16 @@ namespace _Project.Develop.Editing.Photo
             _effects = GetComponent<UIEffects>();
             _toolTrigger = GetComponent<CursorToolTrigger>();
             
+            _effects.SetEffect(UIEffectType.PressScale, false);
             Disable().Forget();
         }
 
         private async UniTaskVoid SimulateHover()
         {
+            var revision = _revision;
             _effects.OnPointerEnter(null);
             await UniTask.Delay(180);
+            if (revision != _revision) return;
             _effects.OnPointerExit(null);
         }
 
@@ -71,7 +107,9 @@ namespace _Project.Develop.Editing.Photo
         
         private async UniTaskVoid CrossOutAsync()
         {
+            var revision = _revision;
             G.Get<SoundController>().ActionHandle.PlayCross();
+            _effects.SetEffect(UIEffectType.PressScale, true);
             
             if (_numberToCrossOut <= 10 && !_rotated)
             {
@@ -85,7 +123,7 @@ namespace _Project.Develop.Editing.Photo
             }
             
             _effects.OnPointerDown(null);
-            G.Get<InputController>().Player.Player.Click.canceled += PointerUp;
+
             
             Image strike;
             
@@ -106,21 +144,26 @@ namespace _Project.Develop.Editing.Photo
                 strike.fillAmount = Mathf.Clamp01(t + noise);
                 
                 await UniTask.Yield();
+                if (revision != _revision) return;
             }
 
             _strikesContained[_numberToCrossOut] = strike.fillAmount;
             _numberToCrossOut = -1;
             
             _effects.OnPointerUp(null);
-            G.Get<InputController>().Player.Player.Click.canceled -= PointerUp;
+
 
             await UniTask.Delay(Random.Range(450, 700));
+            if (revision != _revision) return;
+
+            _effects.SetEffect(UIEffectType.PressScale, false);
             Disable().Forget();
             
+            G.Get<EditController>().CompletePhoto();
             G.Get<EventBus>().ChecklistDown?.Invoke();
             return;
 
-            void PointerUp(InputAction.CallbackContext _) => _effects.OnPointerUp(null);
+
         }
 
         public void SetText(string text)
@@ -154,6 +197,7 @@ namespace _Project.Develop.Editing.Photo
 
         private async UniTaskVoid RotateChecklistAsync()
         {
+            var revision = _revision;
             if (_numberToCrossOut is <= 10 and > -1 && !_rotated)
             {
                 _stringsEffects[_numberToCrossOut].enabled = false;
@@ -170,6 +214,7 @@ namespace _Project.Develop.Editing.Photo
             
             var midEuler = new Vector3(transform.localEulerAngles.x, 90f, transform.localEulerAngles.z);
             await Tween.LocalRotation(transform, midEuler, duration: 0.25f, ease: Ease.InQuad);
+            if (revision != _revision) return;
 
             if (_rotated)
             {
@@ -198,6 +243,7 @@ namespace _Project.Develop.Editing.Photo
             
             var targetEuler = new Vector3(transform.localEulerAngles.x, 0f, transform.localEulerAngles.z);
             await Tween.LocalRotation(transform, targetEuler, duration: 0.25f, ease: Ease.OutQuad);
+            if (revision != _revision) return;
             
             if (_numberToCrossOut is <= 10 and > -1 && !_rotated)
             {
@@ -215,15 +261,15 @@ namespace _Project.Develop.Editing.Photo
 
         private async UniTaskVoid Disable()
         {
+            var revision = _revision;
             await UniTask.Delay(700);
+            if (revision != _revision) return;
             
-            _effects.SetEffect(UIEffectType.PressScale, false);
             _toolTrigger.Disable();
         }
 
         public void Enable(int numberToCrossOut)
         {
-            _effects.SetEffect(UIEffectType.PressScale, true);
             _toolTrigger.Enable();
             
             _numberToCrossOut = numberToCrossOut;

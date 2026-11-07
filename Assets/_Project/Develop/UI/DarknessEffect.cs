@@ -22,6 +22,8 @@ namespace _Project.Develop.UI
         private TextMeshProUGUI _spaceText;
         private CanvasGroup _group;
         
+        private int _revision;
+        private string _originalSpaceText;
         private float _brightness;
         private float _gaussianBlur;
         private float _alphaDissolve;
@@ -35,6 +37,8 @@ namespace _Project.Develop.UI
             
             _spaceText = GetComponentInChildren<TextMeshProUGUI>(true);
             _group = GetComponent<CanvasGroup>();
+            _originalSpaceText = _spaceText.text;
+            G.Get<EventBus>().PreSceneReset += OnReset;
             
             _brightness = _effect.material.GetFloat(Brightness);
             _gaussianBlur = _effect.material.GetFloat(GaussianBlurFade);
@@ -45,6 +49,7 @@ namespace _Project.Develop.UI
 
         public async UniTask ApplyEffect()
         {
+            var revision = _revision;
             canvas.worldCamera = _screenCam;
             _screenCam.gameObject.SetActive(true);
 
@@ -62,20 +67,21 @@ namespace _Project.Develop.UI
                 startValue: 1,
                 endValue: _brightness,
                 duration: 0.5f,
-                onValueChange: value => _effect.material.SetFloat(Brightness, value));
+                onValueChange: value => { if (revision == _revision) _effect.material.SetFloat(Brightness, value); });
 
             _ = Tween.Custom(
                 startValue: 0,
                 endValue: _gaussianBlur,
                 duration: 0.5f,
-                onValueChange: value => _effect.material.SetFloat(GaussianBlurFade, value));
+                onValueChange: value => { if (revision == _revision) _effect.material.SetFloat(GaussianBlurFade, value); });
             
             await Tween.Custom(
                 startValue: 1,
                 endValue: _alphaDissolve,
                 duration: 0.5f,
-                onValueChange: value => _effect.material.SetFloat(FullAlphaDissolveFade, value));
+                onValueChange: value => { if (revision == _revision) _effect.material.SetFloat(FullAlphaDissolveFade, value); });
 
+            if (revision != _revision) return;
             var stepTime = 0.4f;
             var step = 0;
             
@@ -86,7 +92,7 @@ namespace _Project.Develop.UI
             
             G.Get<InputController>().Player.Player.Space.performed += AddStep;
             
-            while (step < target)
+            while (step < target && revision == _revision)
             {
                 if (stepTime < 0)
                 {
@@ -108,6 +114,8 @@ namespace _Project.Develop.UI
                 await UniTask.Yield();
             }
 
+            G.Get<InputController>().Player.Player.Space.performed -= AddStep;
+            if (revision != _revision) return;
             await Tween.Alpha(_spaceText, endValue: 0f, duration: 0.3f, ease: Ease.InQuad);
             RemoveEffect();
             
@@ -116,7 +124,7 @@ namespace _Project.Develop.UI
 
             void AddStep(InputAction.CallbackContext obj)
             {
-                AddStepAsync().Forget();
+                if (revision == _revision) AddStepAsync().Forget();
             }
 
             async UniTaskVoid AddStepAsync()
@@ -130,14 +138,32 @@ namespace _Project.Develop.UI
                 _effect.material.SetFloat(GaussianBlurFade, gaussianBlur);
 
                 await Tween.Scale(_spaceText.transform, endValue: 0.85f, duration: 0.08f, ease: Ease.OutQuad);
+                if (revision != _revision) return;
                 _spaceText.text = spaceText;
                 await Tween.Scale(_spaceText.transform, endValue: 1f, duration: 0.12f, ease: Ease.OutQuad);
+                if (revision != _revision) return;
                 _spaceText.text = $"[{spaceText}]";
                 
                 step++;
             }
         }
         
+        private void OnReset()
+        {
+            _revision++;
+            Tween.StopAll(_effect.material);
+            Tween.StopAll(_spaceText);
+            Tween.StopAll(_spaceText.transform);
+            Tween.StopAll(_group);
+            canvas.worldCamera = _baseCam;
+            _screenCam.gameObject.SetActive(false);
+            _group.alpha = 0f;
+            _group.blocksRaycasts = false;
+            _spaceText.gameObject.SetActive(false);
+            _spaceText.text = _originalSpaceText;
+            _spaceText.transform.localScale = Vector3.one;
+        }
+
         private void RemoveEffect()
         {
             canvas.worldCamera = _baseCam;
@@ -161,6 +187,7 @@ namespace _Project.Develop.UI
 
         private void OnDestroy()
         {
+            G.Get<EventBus>().PreSceneReset -= OnReset;
             G.Get<EventBus>().SceneReady -= RemoveEffect;
         }
         

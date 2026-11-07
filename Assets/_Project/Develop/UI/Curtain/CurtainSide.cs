@@ -81,6 +81,7 @@ namespace _Project.Develop.UI.Curtain
 
         private void OnPause()
         {
+            _dragging = false;
             _toolTrigger.Disable();
         }
 

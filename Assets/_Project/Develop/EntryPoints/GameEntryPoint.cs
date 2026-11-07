@@ -87,8 +87,8 @@ namespace _Project.Develop.EntryPoints
 
             var editController = new EditController(editView);
             editView.Init();
-            editController.Init(sprayTool);
             G.Register(editController);
+            editController.Init(sprayTool);
 
             var anomalyController = new AnomalyController(anomalyView);
             anomalyController.Init();

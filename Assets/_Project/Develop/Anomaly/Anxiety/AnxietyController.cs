@@ -15,17 +15,20 @@ namespace _Project.Develop.Anomaly.Anxiety
         private UIBar _bar;
 
         private bool _barWarned;
+        private bool _resetting;
         
         private int _currentLevel = 1;
 
         public void Init()
         {
             G.Get<EventBus>().SceneReset += OnSceneReset;
+            G.Get<EventBus>().PreSceneReset += Stop;
+            G.Get<EventBus>().SceneReady += Resume;
         }
         
         public void Tick()
         {
-            if (_anxietySources.Count == 0) return;
+            if (_resetting || _anxietySources.Count == 0) return;
             
             var value = _anxietySources.Sum(source => source.EvaluateAnxiety);
             value = _anxietyModifiers.Aggregate(value, (current, modifier) => modifier.Modify(current));
@@ -49,9 +52,15 @@ namespace _Project.Develop.Anomaly.Anxiety
             _barWarned = warn;
         }
         
+        private void Stop() => _resetting = true;
+        private void Resume() => _resetting = false;
+
         private void OnSceneReset()
         {
-            _bar?.AddValue(-1 * 1000);
+            _bar ??= G.Get<UIBar>();
+            _bar.AddValue(-1000f);
+            _currentLevel = 1;
+            _barWarned = false;
         }
 
         public void Apply(AnxietyModifier anxietyModifier)
@@ -91,6 +100,8 @@ namespace _Project.Develop.Anomaly.Anxiety
         public void Dispose()
         {
             G.Get<EventBus>().SceneReset -= OnSceneReset;
+            G.Get<EventBus>().PreSceneReset -= Stop;
+            G.Get<EventBus>().SceneReady -= Resume;
         }
     }
 }

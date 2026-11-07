@@ -59,15 +59,20 @@ namespace _Project.Develop.Editing.States
         
         public async UniTask Enter()
         {
+            var controller = G.Get<EditController>();
+            var revision = controller.Revision;
             await UniTask.Delay(500);
+            if (revision != controller.Revision) return;
             
             _editView.PickPhoto(out var photo);
+            if (photo == null) return;
             G.Get<EventBus>().StartEditing?.Invoke();
             
             SpawnSpots(photo.Image.rectTransform, out _targetShine);
             photo.gameObject.SetActive(true);
 
-            await UniTask.WaitUntil(() => photo.gameObject.activeInHierarchy, cancellationToken: _disposeCts.Token);
+            await UniTask.WaitUntil(() => revision != controller.Revision || photo.gameObject.activeInHierarchy, cancellationToken: _disposeCts.Token);
+            if (revision != controller.Revision) return;
             
             _effects ??= photo.GetComponentInParent<UIEffects>();
             
@@ -85,9 +90,11 @@ namespace _Project.Develop.Editing.States
                 if (replacedPhoto != null)
                 {
                     await wait;
+                    if (revision != controller.Revision) return;
                     
                     photo.Ano.PlaySound(look: true);
                     await photo.Ano.ActivateSourceTask();
+                    if (revision != controller.Revision) return;
                     
                     photo.Ano.StopSound(look: true);
 
@@ -101,7 +108,8 @@ namespace _Project.Develop.Editing.States
             var ano = photo.Ano != null;
             if (ano) G.Get<EventBus>().EditingAno?.Invoke();
             
-            await UniTask.WaitUntil(() => IsSpotsCompleted(ano), cancellationToken: _disposeCts.Token);
+            await UniTask.WaitUntil(() => revision != controller.Revision || IsSpotsCompleted(ano), cancellationToken: _disposeCts.Token);
+            if (revision != controller.Revision) return;
             G.Get<EventBus>().SpotsFinished?.Invoke();
             
             G.Get<EditController>().StateController.ChangeState(G.Get<EditController>().RotateState.WithPhoto(photo));

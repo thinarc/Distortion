@@ -17,6 +17,7 @@ namespace _Project.Develop.UI.HUD
         private int _completedNights;
 
         private bool _training;
+        private bool _transitioning;
 
         public float Timer { get; set; }
         
@@ -26,17 +27,22 @@ namespace _Project.Develop.UI.HUD
             
             G.Get<EventBus>().ChecklistDown += UpdateCounter;
             G.Get<EventBus>().SceneReset += OnSceneReset;
+            G.Get<EventBus>().PreSceneReset += OnPreReset;
+            G.Get<EventBus>().RunReset += OnRunReset;
+            G.Get<EventBus>().SceneReady += OnReady;
         }
 
         private void OnSceneReset()
         {
-            _completedPhotos = -1;
+            _completedPhotos = 0;
             _targetPhotos = 3;
 
             Timer = 0f;
+            _nextUpdateTime = 0f;
+            _lastHour = -1;
             
             UpdateTimer(23, 0);
-            UpdateCounter();
+            counterText.text = $"{_completedPhotos}/{_targetPhotos}";
             
             // _training = true;
             
@@ -45,6 +51,7 @@ namespace _Project.Develop.UI.HUD
 
         private void Update()
         {
+            if (_transitioning) return;
             Timer += Time.deltaTime;
             
             if (_training)
@@ -62,7 +69,11 @@ namespace _Project.Develop.UI.HUD
                 var minutes = Mathf.FloorToInt(totalMinutes % 60f);
                 
                 UpdateTimer(hours, minutes);
-                if (hours == 6) G.Get<EventBus>().AverageEnd?.Invoke();
+                if (hours == 6)
+                {
+                    _transitioning = true;
+                    G.Get<EventBus>().AverageEnd?.Invoke();
+                }
             }
         }
         
@@ -91,21 +102,37 @@ namespace _Project.Develop.UI.HUD
 
         private void UpdateCounter()
         {
+            if (_transitioning) return;
             counterText.text = ++_completedPhotos + $"/{_targetPhotos}";
 
             if (_completedPhotos >= _targetPhotos)
             {
-                if (++_completedNights >= 3) G.Get<EventBus>().GoodEnd?.Invoke();
+                _transitioning = true;
+                PlayerPrefs.SetInt("completed-nights", ++_completedNights);
+                PlayerPrefs.Save();
+                if (_completedNights >= 3) G.Get<EventBus>().GoodEnd?.Invoke();
                 else G.Get<EventBus>().PassNight?.Invoke(_completedNights);
-                
-                PlayerPrefs.SetInt("completed-nights", _completedNights);
             }
+        }
+
+        private void OnPreReset() => _transitioning = true;
+        private void OnReady() => _transitioning = false;
+
+        private void OnRunReset()
+        {
+            PlayerPrefs.DeleteKey("completed-nights");
+            PlayerPrefs.DeleteKey("started-game");
+            PlayerPrefs.Save();
+            _completedNights = -1;
         }
 
         private void OnDestroy()
         {
             G.Get<EventBus>().ChecklistDown -= UpdateCounter;
             G.Get<EventBus>().SceneReset -= OnSceneReset;
+            G.Get<EventBus>().PreSceneReset -= OnPreReset;
+            G.Get<EventBus>().RunReset -= OnRunReset;
+            G.Get<EventBus>().SceneReady -= OnReady;
         }
     }
 }

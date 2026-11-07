@@ -36,7 +36,13 @@ namespace _Project.Develop.UI.Cursor
             if (!_dragging) G.Get<UICursor>().SetDefaultMode();
         }
 
-        public void Disable() => _disabled = true;
+        public void Disable()
+        {
+            _disabled = true;
+            _dragging = false;
+            _placed = false;
+            G.Get<UICursor>().SetDefaultMode();
+        }
         
         public void Enable() => _disabled = false;
     }

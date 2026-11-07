@@ -132,6 +132,7 @@ namespace _Project.Develop.UI.Menus
                 
                 _switchModel.GoToLocation("Workplace").Forget();
                 G.Get<EventBus>().SceneReady?.Invoke();
+                G.Get<EventBus>().Resume?.Invoke();
                 
                 G.Get<InputController>().Player.Player.Click.performed -= OnClick;
 
@@ -147,6 +148,7 @@ namespace _Project.Develop.UI.Menus
 
         private async UniTaskVoid OnGoodEndAsync()
         {
+            G.Get<EventBus>().RunReset?.Invoke();
             G.Get<SoundController>().SetEndingState(true);
             G.Get<EventBus>().PreSceneReset?.Invoke();
             G.Get<EventBus>().Pause?.Invoke();
@@ -192,8 +194,6 @@ namespace _Project.Develop.UI.Menus
                 G.Get<UICursor>().Show();
             
                 _switchModel.GoToLocation("Workplace").Forget();
-                G.Get<EventBus>().SceneReady?.Invoke();
-
                 buttonsGroup.blocksRaycasts = true;
                 buttonsGroup.interactable = true;
             }
@@ -206,6 +206,7 @@ namespace _Project.Develop.UI.Menus
 
         private async UniTaskVoid OnAverageEndAsync()
         {
+            G.Get<EventBus>().RunReset?.Invoke();
             G.Get<SoundController>().MusicHandle.StopMusic();
             G.Get<SoundController>().SetEndingState(true);
             G.Get<EventBus>().PreSceneReset?.Invoke();
@@ -227,8 +228,6 @@ namespace _Project.Develop.UI.Menus
             await UniTask.Delay(540);
             
             _teleButton.onClick.AddListener(TakePhone);
-            G.Get<EventBus>().SceneReady?.Invoke();
-            
             averageGroup.blocksRaycasts = true;
             averageGroup.interactable = true;
         }
@@ -284,6 +283,7 @@ namespace _Project.Develop.UI.Menus
 
         private async UniTaskVoid OnBadEndAsync()
         {
+            G.Get<EventBus>().RunReset?.Invoke();
             G.Get<EventBus>().PreSceneReset?.Invoke();
             G.Get<EventBus>().Pause?.Invoke();
             G.Get<UICursor>().Hide();
@@ -329,8 +329,6 @@ namespace _Project.Develop.UI.Menus
                 await Tween.Alpha(buttonsGroup, endValue: 1f, duration: 0.3f, startDelay: 0.1f);
             
                 G.Get<UICursor>().Show();
-                G.Get<EventBus>().SceneReady?.Invoke();
-                
                 buttonsGroup.blocksRaycasts = true;
                 buttonsGroup.interactable = true;
             }
@@ -343,11 +341,15 @@ namespace _Project.Develop.UI.Menus
 
         private async UniTaskVoid RetryGameAsync()
         {
-            G.Get<SoundController>().SetEndingState(false);
-            G.Get<SoundController>().EndingHandle.StopStinger();
-            
+            if (!buttonsGroup.interactable) return;
             buttonsGroup.blocksRaycasts = false;
             buttonsGroup.interactable = false;
+            G.Get<SoundController>().SetEndingState(false);
+            Time.timeScale = 1f;
+            PlayerPrefs.SetInt("started-game", 1);
+            PlayerPrefs.Save();
+            await _switchModel.GoToLocation("Workplace");
+            G.Get<SoundController>().EndingHandle.StopStinger();
             
             _ = Tween.Alpha(goodPics[0], endValue: 0f, duration: 0.3f);
             _ = Tween.Alpha(goodPics[1], endValue: 0f, duration: 0.3f);
@@ -363,6 +365,7 @@ namespace _Project.Develop.UI.Menus
             blackScreen.raycastTarget = false;
             
             G.Get<EventBus>().SceneReady?.Invoke();
+            G.Get<EventBus>().Resume?.Invoke();
         }
 
         public void QuitGame()
