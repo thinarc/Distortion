@@ -41,6 +41,10 @@ namespace _Project.Develop.EntryPoints
         
         private readonly List<IDisposable> _disposables = new();
 
+#if UNITY_EDITOR
+        private bool _debugEndingBlocked;
+#endif
+
         private void Start()
         {
             StartAsync().Forget();
@@ -94,12 +98,31 @@ namespace _Project.Develop.EntryPoints
             anomalyController.Init();
             
             AddToDisposables(editController, anomalyController, curtain, _anxietyController, G.Get<SoundController>());
+#if UNITY_EDITOR
+            G.Get<EventBus>().PreSceneReset += BlockDebugEndings;
+            G.Get<EventBus>().SceneReady += AllowDebugEndings;
+#endif
         }
 
         private void Update()
         {
             _anxietyController?.Tick();
+#if UNITY_EDITOR
+            var keyboard = UnityEngine.InputSystem.Keyboard.current;
+            if (_disposables.Count == 0 || _debugEndingBlocked || !mainMenu.IsGameplayActive ||
+                Time.timeScale <= 0f || keyboard == null) return;
+
+            var bus = G.Get<EventBus>();
+            if (keyboard.digit7Key.wasPressedThisFrame) bus.BadEnd?.Invoke();
+            else if (keyboard.digit8Key.wasPressedThisFrame) bus.AverageEnd?.Invoke();
+            else if (keyboard.digit9Key.wasPressedThisFrame) bus.GoodEnd?.Invoke();
+#endif
         }
+
+#if UNITY_EDITOR
+        private void BlockDebugEndings() => _debugEndingBlocked = true;
+        private void AllowDebugEndings() => _debugEndingBlocked = false;
+#endif
 
         private void AddToDisposables(params IDisposable[] disposables)
         {
@@ -108,6 +131,10 @@ namespace _Project.Develop.EntryPoints
 
         private void OnDestroy()
         {
+#if UNITY_EDITOR
+            G.Get<EventBus>().PreSceneReset -= BlockDebugEndings;
+            G.Get<EventBus>().SceneReady -= AllowDebugEndings;
+#endif
             G.Unregister<UICursor>();
             G.Unregister<UIBar>();
             G.Unregister<DarknessEffect>();

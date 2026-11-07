@@ -165,6 +165,7 @@ namespace _Project.Develop.UI.Menus
         {
             G.Get<SoundController>().SetEndingState(false);
             ClearSaves();
+            TutorialSettings.ResetTutorials();
             G.Get<EventBus>().RunReset?.Invoke();
             CloseMenu();
             

@@ -38,7 +38,7 @@ namespace _Project.Develop.UI.Menus
 
         public void ShowOnce()
         {
-            if (_shown || _requested) return;
+            if (!TutorialSettings.ShouldShow || _shown || _requested) return;
             Init();
             _requested = true;
             ShowAsync(_revision).Forget();

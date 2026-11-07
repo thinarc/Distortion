@@ -148,6 +148,7 @@ namespace _Project.Develop.UI.Menus
 
         private async UniTaskVoid OnGoodEndAsync()
         {
+            TutorialSettings.RecordEnding(goodEnding: true);
             G.Get<EventBus>().RunReset?.Invoke();
             G.Get<SoundController>().SetEndingState(true);
             G.Get<EventBus>().PreSceneReset?.Invoke();
@@ -206,6 +207,7 @@ namespace _Project.Develop.UI.Menus
 
         private async UniTaskVoid OnAverageEndAsync()
         {
+            TutorialSettings.RecordEnding(goodEnding: false);
             G.Get<EventBus>().RunReset?.Invoke();
             G.Get<SoundController>().MusicHandle.StopMusic();
             G.Get<SoundController>().SetEndingState(true);
@@ -283,6 +285,7 @@ namespace _Project.Develop.UI.Menus
 
         private async UniTaskVoid OnBadEndAsync()
         {
+            TutorialSettings.RecordEnding(goodEnding: false);
             G.Get<EventBus>().RunReset?.Invoke();
             G.Get<EventBus>().PreSceneReset?.Invoke();
             G.Get<EventBus>().Pause?.Invoke();
@@ -364,6 +367,7 @@ namespace _Project.Develop.UI.Menus
             
             blackScreen.raycastTarget = false;
             
+            TutorialSettings.ResetTutorials();
             G.Get<EventBus>().SceneReady?.Invoke();
             G.Get<EventBus>().Resume?.Invoke();
         }

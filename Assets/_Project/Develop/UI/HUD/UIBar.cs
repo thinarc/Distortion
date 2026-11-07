@@ -38,6 +38,7 @@ namespace _Project.Develop.UI.HUD
         private int _revision;
 
         public bool Showing { get; private set; }
+        public bool EmergencyShowing => _showPills;
 
         public float Value => _slider.value;
         

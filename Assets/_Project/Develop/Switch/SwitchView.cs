@@ -20,8 +20,6 @@ namespace _Project.Develop.Switch
         
         private bool _init;
 
-        public bool IsEditing { get; private set; } = true;
-
         private void Start()
         {
             _group = GetComponent<CanvasGroup>();
@@ -67,7 +65,6 @@ namespace _Project.Develop.Switch
         private void OnSceneReset()
         {
             _init = false;
-            IsEditing = true;
         }
         
         private void OnNavigate(InputAction.CallbackContext ctx)
@@ -82,7 +79,6 @@ namespace _Project.Develop.Switch
         
         public async UniTask ChangeLocation(BaseLocation current, BaseLocation target)
         {
-            IsEditing = current == null || current.Config.key == "Editing" || target.Config.key == "Editing";
             InteractButtons(null);
             
             if (current != null)
@@ -103,7 +99,6 @@ namespace _Project.Develop.Switch
             
             if (target.Config.key != "Editing") G.Get<UIBar>().Show(target.TransitionTime, target.TransitionEase);
             
-            IsEditing = target.Config.key == "Editing";
             InteractButtons(target.Config.directions);
         }
         
