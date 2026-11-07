@@ -30,6 +30,7 @@ namespace _Project.Develop.Editing.States
             G.Get<EventBus>().ChecklistDown += OnChecklistDown;
             
             _checklist.Enable(_numberToCrossOut);
+            _editView.ShowChecklistTip();
             
             await UniTask.CompletedTask;
         }
@@ -44,11 +45,13 @@ namespace _Project.Develop.Editing.States
 
         public async UniTask Exit()
         {
+            _editView.HideChecklistTip();
             await UniTask.CompletedTask;
         }
 
         public void Dispose()
         {
+            _editView.HideChecklistTip();
             G.Get<EventBus>().ChecklistDown -= OnChecklistDown;
         }
     }

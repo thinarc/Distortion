@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using _Project.Develop.Anomaly;
 using _Project.Develop.Editing.Photo;
 using _Project.Develop.Switch.Scenes;
+using _Project.Develop.UI.Menus;
 using UnityEngine;
 using PrimeTween;
 using UnityEngine.Events;
@@ -22,6 +23,13 @@ namespace _Project.Develop.Editing
         [SerializeField, Space(5)] private Button[] buttons;
 
         [SerializeField, Space(5)] private EditingChecklist checklist;
+        [SerializeField] private TutorialDialog checklistTip;
+        [SerializeField] private TutorialDialog photoTip;
+
+        public void ShowChecklistTip() => checklistTip.ShowOnce();
+        public void HideChecklistTip() => checklistTip.Hide();
+        public void ShowPhotoTip() => photoTip.ShowOnce();
+        public void HidePhotoTip() => photoTip.Hide();
         
         private CanvasGroup _buttonsGroup;
         
@@ -47,6 +55,8 @@ namespace _Project.Develop.Editing
 
         public void StopEditing()
         {
+            checklistTip.Hide(immediate: true);
+            photoTip.Hide(immediate: true);
             foreach (var t in GetComponentsInChildren<Transform>(true)) Tween.StopAll(t);
             foreach (var image in GetComponentsInChildren<Image>(true)) Tween.StopAll(image);
             Tween.StopAll(spotsGroup);
@@ -61,6 +71,8 @@ namespace _Project.Develop.Editing
         {
             if (fullReset)
             {
+                checklistTip.ResetTip();
+                photoTip.ResetTip();
                 _correctPhotos.Clear();
                 _correctPhotos.AddRange(_allPhotos);
             }
@@ -79,6 +91,8 @@ namespace _Project.Develop.Editing
 
         public void Init()
         {
+            checklistTip.Hide(immediate: true);
+            photoTip.Hide(immediate: true);
             _allPhotos = correctRect.GetComponentsInChildren<EditingPhoto>(true);
             _correctPhotos.AddRange(_allPhotos);
             foreach (var photo in GetComponentsInChildren<EditingPhoto>(true)) photo.CaptureInitialState();

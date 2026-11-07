@@ -29,6 +29,7 @@ namespace _Project.Develop.Editing.States
             var controller = G.Get<EditController>();
             var revision = controller.Revision;
             G.Get<EventBus>().PhotoDown += OnPhotoDown;
+            _editView.ShowPhotoTip();
             await UniTask.CompletedTask;
             if (revision != controller.Revision) return;
         }
@@ -40,6 +41,7 @@ namespace _Project.Develop.Editing.States
             var controller = G.Get<EditController>();
             var revision = controller.Revision;
             G.Get<EventBus>().PhotoDown -= OnPhotoDown;
+            _editView.HidePhotoTip();
             G.Get<EventBus>().EndEditing?.Invoke();
             
             G.Get<SoundController>().ActionHandle.PlayPhoto();
@@ -61,6 +63,7 @@ namespace _Project.Develop.Editing.States
 
         public void Dispose()
         {
+            _editView.HidePhotoTip();
             G.Get<EventBus>().PhotoDown -= OnPhotoDown;
         }
     }

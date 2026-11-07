@@ -1,4 +1,5 @@
 using _Project.Develop.UI.HUD;
+using _Project.Develop.Switch;
 using PrimeTween;
 using UnityEngine;
 
@@ -21,6 +22,7 @@ namespace _Project.Develop.UI.Menus
         private Vector3 _hintScale;
         private Quaternion _hintRotation;
         private MainMenu _mainMenu;
+        private SwitchView _switchView;
         private UIBar _bar;
         private CanvasGroup _barGroup;
         private float _hintAlpha;
@@ -45,6 +47,7 @@ namespace _Project.Develop.UI.Menus
             _hintGroup = hintButton.GetComponent<CanvasGroup>();
             if (_hintGroup == null) _hintGroup = hintButton.gameObject.AddComponent<CanvasGroup>();
             _mainMenu = FindFirstObjectByType<MainMenu>(FindObjectsInactive.Include);
+            _switchView = FindFirstObjectByType<SwitchView>(FindObjectsInactive.Include);
             _bar = FindFirstObjectByType<UIBar>(FindObjectsInactive.Include);
             if (_bar != null) _barGroup = _bar.GetComponent<CanvasGroup>();
 
@@ -98,9 +101,15 @@ namespace _Project.Develop.UI.Menus
 
         private void Update()
         {
-            var hudVisible = _bar != null && _bar.Showing && _barGroup != null && _barGroup.alpha >= 0.99f;
-            if (_hintSequence.isAlive) _hintSequence.isPaused = !_pausedForHint && !hudVisible;
-            if (_expired || !hudVisible || _mainMenu == null || !_mainMenu.IsGameplayActive || Time.timeScale <= 0f) return;
+            var hudVisible = CanShowHint && _bar != null && _bar.Showing && _barGroup != null && _barGroup.alpha >= 0.99f;
+            if (_hintSequence.isAlive) _hintSequence.isPaused = !_expired && !_pausedForHint && !hudVisible;
+            if (_expired || _mainMenu == null || !_mainMenu.IsGameplayActive || Time.timeScale <= 0f) return;
+
+            if (!_appeared)
+            {
+                if (!hudVisible) return;
+                ShowHint();
+            }
 
             _gameplayTime += Time.deltaTime;
             if (_gameplayTime >= hintGameplayDuration)
@@ -108,14 +117,14 @@ namespace _Project.Develop.UI.Menus
                 HideHint();
                 return;
             }
-
-            if (!_appeared) ShowHint();
         }
+
+        private bool CanShowHint => _switchView != null && !_switchView.IsEditing;
 
         private void LateUpdate()
         {
             // Follow UIBar's tween directly so fades use exactly the same timing and easing.
-            _hintGroup.alpha = _hintAlpha * (_barGroup != null ? _barGroup.alpha : 0f);
+            _hintGroup.alpha = CanShowHint ? _hintAlpha * (_barGroup != null ? _barGroup.alpha : 0f) : 0f;
             var visible = !_expired && _bar != null && _bar.Showing && _hintGroup.alpha >= 0.99f;
             _hintGroup.interactable = visible;
             _hintGroup.blocksRaycasts = visible;
@@ -148,7 +157,7 @@ namespace _Project.Develop.UI.Menus
 
         private void Show()
         {
-            if (_expired || !hintButton.interactable || overlayGroup.interactable) return;
+            if (!CanShowHint || _expired || !hintButton.interactable || overlayGroup.interactable) return;
             if (_fadeTween.isAlive) _fadeTween.Stop();
             StopHintAnimation();
             hintButton.interactable = false;
@@ -205,7 +214,7 @@ namespace _Project.Develop.UI.Menus
             _expired = true;
             StopHintAnimation();
             hintButton.interactable = false;
-            _hintSequence = Sequence.Create()
+            _hintSequence = Sequence.Create(useUnscaledTime: true)
                 .Chain(Tween.Custom(_hintAlpha, 0f, fadeDuration, value => _hintAlpha = value, Ease.InOutSine))
                 .Group(Tween.Scale(hintButton.transform, _hintScale * 0.8f, fadeDuration, Ease.InOutSine))
                 .OnComplete(() => hintButton.gameObject.SetActive(false));

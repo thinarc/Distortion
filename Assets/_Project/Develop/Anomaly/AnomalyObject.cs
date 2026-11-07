@@ -75,6 +75,7 @@ namespace _Project.Develop.Anomaly
                     if (anxiety != 0f) _anomalySource = new AnxietySource(anxiety);
                     break;
                 case ApplyType.Mouse:
+                    G.Get<UICursor>().SetMouseAnomalyActive(this, true);
                     if (anxiety != 0f) _anomalySource = new AnxietySource(anxiety);
                     break;
             }
@@ -105,7 +106,6 @@ namespace _Project.Develop.Anomaly
             {
                 _mouseTrackCts?.Cancel();
                 _mouseTrackCts = new CancellationTokenSource();
-                G.Get<UICursor>().SetMouseAnomalyActive(this, true);
                 InfluenceMouseLoop(_mouseTrackCts.Token).Forget();
                 return;
             }
@@ -170,6 +170,7 @@ namespace _Project.Develop.Anomaly
                     _anomalySource = null;
                     break;
                 case ApplyType.Mouse:
+                    G.Get<UICursor>().SetMouseAnomalyActive(this, false);
                     _anomalySource?.Dispose();
                     _anomalySource = null;
                     break;
@@ -191,7 +192,6 @@ namespace _Project.Develop.Anomaly
                 _mouseTrackCts?.Cancel();
                 _mouseTrackCts?.Dispose();
                 _mouseTrackCts = null;
-                G.Get<UICursor>().SetMouseAnomalyActive(this, false);
                 return;
             }
             
