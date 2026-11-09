@@ -10,6 +10,9 @@ namespace _Project.Develop.UI.Menus
     public class TutorialDialog : MonoBehaviour
     {
         [SerializeField, Min(0.01f)] private float fadeDuration = 0.25f;
+        [SerializeField, Min(0.01f)] private float appearDuration = 0.65f;
+        [SerializeField, Min(1)] private int trailingCharacters = 10;
+        [SerializeField, Min(0.01f)] private float characterDelay = 0.055f;
 
         private TMP_Text _text;
         private TMPWriter _writer;
@@ -34,6 +37,7 @@ namespace _Project.Develop.UI.Menus
             // Localization may update the text before this tutorial step is reached.
             _writer.WriteOnStart = false;
             _writer.WriteOnNewText = false;
+            _writer.enabled = false;
         }
 
         public void ShowOnce()
@@ -51,18 +55,25 @@ namespace _Project.Develop.UI.Menus
 
             if (_fade.isAlive) _fade.Stop();
             _group.alpha = 0f;
-            _text.maxVisibleCharacters = 0;
+            _text.maxVisibleCharacters = int.MaxValue;
             gameObject.SetActive(true);
             _text.text = text;
-            // Allow TMPWriter to process the localized text before restarting it.
-            await UniTask.Yield();
-            if (this == null || revision != _revision) return;
-
-            _text.maxVisibleCharacters = int.MaxValue;
-            _writer.RestartWriter();
-            _fade = Tween.Alpha(_group, endValue: 1f, duration: fadeDuration, ease: Ease.InOutSine);
+            _text.ForceMeshUpdate();
+            var characterCount = _text.textInfo.characterCount;
+            var visibleCharacters = Mathf.Max(0, characterCount - trailingCharacters);
+            _text.maxVisibleCharacters = visibleCharacters;
+            _fade = Tween.Alpha(_group, endValue: 1f, duration: appearDuration, ease: Ease.InOutSine);
             _shown = true;
             _requested = false;
+
+            // Keep typing throughout the fade so it is already underway when the hint becomes visible.
+            while (visibleCharacters < characterCount)
+            {
+                _text.maxVisibleCharacters = ++visibleCharacters;
+                await UniTask.Delay(System.TimeSpan.FromSeconds(characterDelay));
+                if (this == null || revision != _revision) return;
+            }
+            _text.maxVisibleCharacters = int.MaxValue;
         }
 
         public void Hide(bool immediate = false)
@@ -71,7 +82,6 @@ namespace _Project.Develop.UI.Menus
             _revision++;
             _requested = false;
             if (_fade.isAlive) _fade.Stop();
-            if (_writer.IsWriting) _writer.StopWriter();
             if (immediate || !gameObject.activeInHierarchy || _group.alpha <= 0f)
             {
                 _group.alpha = 0f;

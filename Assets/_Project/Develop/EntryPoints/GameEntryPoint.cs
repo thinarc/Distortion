@@ -33,6 +33,7 @@ namespace _Project.Develop.EntryPoints
         [SerializeField] private RestDialog restDialog;
         [SerializeField] private UIStats stats;
         [SerializeField] private EndingMenu endingMenuPrefab;
+        [SerializeField] private DialogueController dialogue;
 
         [SerializeField, Space(5)] private Canvas streetCanvas;
         [SerializeField] private RectTransform streetMask;
@@ -79,6 +80,9 @@ namespace _Project.Develop.EntryPoints
             curtain.Init();
             G.Register(curtain);
 
+            dialogue.Init();
+            G.Register(dialogue);
+
             var switchModel = new SwitchModel(switchView);
             await switchModel.Init(startLocation: "Workplace", FindObjectsByType<BaseLocation>(FindObjectsInactive.Include, FindObjectsSortMode.None));
             var switchController = new SwitchController(switchModel);
@@ -98,6 +102,7 @@ namespace _Project.Develop.EntryPoints
             anomalyController.Init();
             
             AddToDisposables(editController, anomalyController, curtain, _anxietyController, G.Get<SoundController>());
+            dialogue.ShowStartupDialogue();
 #if UNITY_EDITOR
             G.Get<EventBus>().PreSceneReset += BlockDebugEndings;
             G.Get<EventBus>().SceneReady += AllowDebugEndings;
@@ -142,6 +147,7 @@ namespace _Project.Develop.EntryPoints
             if (G.Has<UICurtain>()) G.Unregister<UICurtain>();
             if (G.Has<RestDialog>()) G.Unregister<RestDialog>();
             if (G.Has<EditController>()) G.Unregister<EditController>();
+            if (G.Has<DialogueController>()) G.Unregister<DialogueController>();
             
             foreach (var disposable in _disposables)
                 disposable.Dispose();

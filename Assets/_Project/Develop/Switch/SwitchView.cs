@@ -4,6 +4,7 @@ using _Project.Develop.Input;
 using _Project.Develop.Switch.Scenes;
 using _Project.Develop.UI.Curtain;
 using _Project.Develop.UI.HUD;
+using _Project.Develop.UI;
 using Cysharp.Threading.Tasks;
 using PrimeTween;
 using UnityEngine;
@@ -83,6 +84,7 @@ namespace _Project.Develop.Switch
             
             if (current != null)
             {
+                G.Get<DialogueController>().SetLocationVisible(false, current.TransitionTime, current.TransitionEase);
                 if (current.Config.key != "Editing") G.Get<UIBar>().Hide(current.TransitionTime, current.TransitionEase);
                 
                 current.UpdateLight(initial: false).Forget();
@@ -90,6 +92,7 @@ namespace _Project.Develop.Switch
             }
 
             target.UpdateLight(initial: target.Config.key == "Window" || G.Get<UICurtain>().BothOpen).Forget();
+            G.Get<DialogueController>().SetLocationVisible(true, target.TransitionTime, target.TransitionEase);
             if (_init) _ = target.Show();
             else
             {

@@ -158,11 +158,19 @@ namespace _Project.Develop.UI.Menus
             
             await _switchModel.GoToLocation("Street");
             
-            G.Get<InputController>().Player.Player.MousePosition.performed += OnMousePosition;
+            var mousePosition = G.Get<InputController>().Player.Player.MousePosition;
+            var previousMousePosition = mousePosition.ReadValue<Vector2>();
+            var mouseDistance = 0f;
+            mousePosition.performed += OnMousePosition;
             return;
 
             void OnMousePosition(InputAction.CallbackContext ctx)
             {
+                var position = ctx.ReadValue<Vector2>();
+                mouseDistance += Vector2.Distance(previousMousePosition, position);
+                previousMousePosition = position;
+                if (mouseDistance < 240f) return;
+
                 OnMousePositionAsync().Forget();
             }
 
@@ -310,11 +318,19 @@ namespace _Project.Develop.UI.Menus
             await UniTask.Delay(duration / 2);
             Time.timeScale = 0f;
 
-            G.Get<InputController>().Player.Player.MousePosition.performed += OnMousePosition;
+            var mousePosition = G.Get<InputController>().Player.Player.MousePosition;
+            var previousMousePosition = mousePosition.ReadValue<Vector2>();
+            var mouseDistance = 0f;
+            mousePosition.performed += OnMousePosition;
             return;
 
             void OnMousePosition(InputAction.CallbackContext ctx)
             {
+                var position = ctx.ReadValue<Vector2>();
+                mouseDistance += Vector2.Distance(previousMousePosition, position);
+                previousMousePosition = position;
+                if (mouseDistance < 160f) return;
+
                 OnMousePositionAsync().Forget();
             }
 

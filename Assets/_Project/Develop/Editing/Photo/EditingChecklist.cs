@@ -19,6 +19,7 @@ namespace _Project.Develop.Editing.Photo
     {
         [SerializeField] private RectTransform strikesContainer;
         [SerializeField] private RectTransform stringsContainer;
+        [SerializeField] private Vector2 rowHitPadding = new(12f, 8f);
 
         [SerializeField, Space(5)] private Sprite rotatedList;
 
@@ -50,11 +51,12 @@ namespace _Project.Develop.Editing.Photo
             _revision++;
             _numberToCrossOut = -1;
             _isRotating = false;
-            _effects.SetEffect(UIEffectType.PressScale, false);
-            _toolTrigger.Disable();
+            if (_effects != null) _effects.SetEffect(UIEffectType.PressScale, false);
+            if (_toolTrigger != null) _toolTrigger.Disable();
             if (_stringsEffects == null) return;
             foreach (var effect in _stringsEffects) effect.enabled = false;
             foreach (var trigger in _stringsTriggers) trigger.enabled = false;
+            foreach (var row in _strings) row.raycastTarget = false;
         }
 
         public void ResetChecklist(bool fullReset)
@@ -64,6 +66,8 @@ namespace _Project.Develop.Editing.Photo
                 Array.Clear(_strikesContained, 0, _strikesContained.Length);
                 _rotated = false;
             }
+            // An inactive checklist may be reset before Start initializes its visuals.
+            if (_image == null) return;
             _image.sprite = _rotated ? rotatedList : _baseList;
             transform.localRotation = Quaternion.identity;
             transform.localScale = Vector3.one;
@@ -83,6 +87,7 @@ namespace _Project.Develop.Editing.Photo
             _baseList = _image.sprite;
             
             _strikes = strikesContainer.GetComponentsInChildren<Image>();
+            foreach (var strike in _strikes) strike.raycastTarget = false;
             
             _effects = GetComponent<UIEffects>();
             _toolTrigger = GetComponent<CursorToolTrigger>();
@@ -107,19 +112,25 @@ namespace _Project.Develop.Editing.Photo
         
         private async UniTaskVoid CrossOutAsync()
         {
+            var rowIndex = _numberToCrossOut - (_rotated ? 10 : 0);
+            if (_isRotating || rowIndex < 0 || rowIndex >= _strings.Length ||
+                !_strings[rowIndex].raycastTarget) return;
+
             var revision = _revision;
             G.Get<SoundController>().ActionHandle.PlayCross();
             _effects.SetEffect(UIEffectType.PressScale, true);
             
-            if (_numberToCrossOut <= 10 && !_rotated)
+            if (_numberToCrossOut < 10 && !_rotated)
             {
                 _stringsEffects[_numberToCrossOut].enabled = false;
                 _stringsTriggers[_numberToCrossOut].enabled = false;
+                _strings[_numberToCrossOut].raycastTarget = false;
             }
-            else if (_numberToCrossOut > 10 && _rotated)
+            else if (_numberToCrossOut >= 10 && _rotated)
             {
                 _stringsEffects[_numberToCrossOut - 10].enabled = false;
                 _stringsTriggers[_numberToCrossOut - 10].enabled = false;
+                _strings[_numberToCrossOut - 10].raycastTarget = false;
             }
             
             _effects.OnPointerDown(null);
@@ -127,9 +138,9 @@ namespace _Project.Develop.Editing.Photo
             
             Image strike;
             
-            if (_numberToCrossOut <= 10 && !_rotated)
+            if (_numberToCrossOut < 10 && !_rotated)
                 strike = _strikes[_numberToCrossOut];
-            else if (_numberToCrossOut > 10 && _rotated)
+            else if (_numberToCrossOut >= 10 && _rotated)
                 strike = _strikes[_numberToCrossOut - 10];
             else throw new IndexOutOfRangeException();
             
@@ -172,6 +183,14 @@ namespace _Project.Develop.Editing.Photo
             _stringsEffects ??= _strings.Select(e => e.GetComponent<UIEffects>()).ToArray();
             _stringsTriggers ??= _strings.Select(t => t.GetComponent<EventTrigger>()).ToArray();
             
+            // Inactive overlapping rows must not intercept the active row's pointer events.
+            foreach (var row in _strings)
+            {
+                row.raycastTarget = false;
+                row.raycastPadding = new Vector4(-rowHitPadding.x, -rowHitPadding.y,
+                    -rowHitPadding.x, -rowHitPadding.y);
+            }
+
             _splitTexts = text.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None);
             
             for (var i = 0; i < 10; i++)
@@ -198,15 +217,17 @@ namespace _Project.Develop.Editing.Photo
         private async UniTaskVoid RotateChecklistAsync()
         {
             var revision = _revision;
-            if (_numberToCrossOut is <= 10 and > -1 && !_rotated)
+            if (_numberToCrossOut is < 10 and > -1 && !_rotated)
             {
                 _stringsEffects[_numberToCrossOut].enabled = false;
                 _stringsTriggers[_numberToCrossOut].enabled = false;
+                _strings[_numberToCrossOut].raycastTarget = false;
             }
-            else if (_numberToCrossOut > 10 && _rotated)
+            else if (_numberToCrossOut >= 10 && _rotated)
             {
                 _stringsEffects[_numberToCrossOut - 10].enabled = false;
                 _stringsTriggers[_numberToCrossOut - 10].enabled = false;
+                _strings[_numberToCrossOut - 10].raycastTarget = false;
             }
             
             _isRotating = true;
@@ -245,15 +266,17 @@ namespace _Project.Develop.Editing.Photo
             await Tween.LocalRotation(transform, targetEuler, duration: 0.25f, ease: Ease.OutQuad);
             if (revision != _revision) return;
             
-            if (_numberToCrossOut is <= 10 and > -1 && !_rotated)
+            if (_numberToCrossOut is < 10 and > -1 && !_rotated)
             {
                 _stringsEffects[_numberToCrossOut].enabled = true;
                 _stringsTriggers[_numberToCrossOut].enabled = true;
+                _strings[_numberToCrossOut].raycastTarget = true;
             }
-            else if (_numberToCrossOut > 10 && _rotated)
+            else if (_numberToCrossOut >= 10 && _rotated)
             {
                 _stringsEffects[_numberToCrossOut - 10].enabled = true;
                 _stringsTriggers[_numberToCrossOut - 10].enabled = true;
+                _strings[_numberToCrossOut - 10].raycastTarget = true;
             }
             
             _isRotating = false;
@@ -274,15 +297,17 @@ namespace _Project.Develop.Editing.Photo
             
             _numberToCrossOut = numberToCrossOut;
 
-            if (_numberToCrossOut <= 10 && !_rotated)
+            if (_numberToCrossOut < 10 && !_rotated)
             {
                 _stringsEffects[_numberToCrossOut].enabled = true;
                 _stringsTriggers[_numberToCrossOut].enabled = true;
+                _strings[_numberToCrossOut].raycastTarget = true;
             }
-            else if (_numberToCrossOut > 10 && _rotated)
+            else if (_numberToCrossOut >= 10 && _rotated)
             {
                 _stringsEffects[_numberToCrossOut - 10].enabled = true;
                 _stringsTriggers[_numberToCrossOut - 10].enabled = true;
+                _strings[_numberToCrossOut - 10].raycastTarget = true;
             }
             
             SimulateHover().Forget();
