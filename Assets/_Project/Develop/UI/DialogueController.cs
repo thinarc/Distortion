@@ -8,15 +8,8 @@ using UnityEngine.UI;
 namespace _Project.Develop.UI
 {
     [RequireComponent(typeof(CanvasGroup), typeof(Image), typeof(Button))]
-    public class DialogueController : MonoBehaviour, IService
+    public partial class DialogueController : MonoBehaviour, IService
     {
-        [SerializeField, TextArea(2, 5)] private string[] startupLines =
-        {
-            "Вот чёрт. Мне нужно срочно собрать фотоархив семьи Куркиных до утра, в редакции уже ругаются...",
-            "Нажми на окно диалога, чтобы прочитать следующую фразу. Во время печати нажатие покажет фразу целиком.",
-            "Перейди к редактированию фотографий. Диалог останется доступен и там. Нажми на это окно, чтобы закрыть его."
-        };
-
         [SerializeField, Min(0.01f)] private float appearDuration = 0.85f;
         [SerializeField, Min(0.01f)] private float disappearDuration = 0.65f;
         [SerializeField, Min(0f)] private float slideDistance = 4f;
@@ -56,6 +49,9 @@ namespace _Project.Develop.UI
             _button.onClick.AddListener(Advance);
             _text = GetComponentInChildren<TMP_Text>(true);
             _writer = _text.GetComponent<TMPWriter>();
+            // Match the phone dialogue in the Average ending.
+            _writer.DefaultDelays.SetDelay(0.06f);
+            _writer.DefaultDelays.SetPunctuationDelay(2.4f, TMPWriter.DelayType.Percentage);
             _writer.WriteOnStart = false;
             _writer.WriteOnNewText = false;
             _writer.StopWriter();
@@ -75,11 +71,15 @@ namespace _Project.Develop.UI
             _bus.Resume += OnResume;
             _bus.EffectApply += OnEffectApply;
             _bus.EffectRemove += OnEffectRemove;
-            _bus.PreSceneReset += Close;
-            _bus.RunReset += Close;
+            _bus.PreSceneReset += StopTutorialDialogue;
+            _bus.RunReset += ResetTutorialDialogue;
+            _bus.SceneReady += RestartTutorialDialogue;
+            _bus.SpotsFinished += OnPhotoCleaned;
+            _bus.EndEditing += OnPhotoFlipped;
+            _bus.ChecklistDown += OnPhotoCompleted;
         }
 
-        public void ShowStartupDialogue() => Show(startupLines);
+        public void ShowStartupDialogue() => StartTutorialDialogue();
 
         public void Show(params string[] lines)
         {
@@ -119,12 +119,20 @@ namespace _Project.Develop.UI
                 return;
             }
 
+            if (_index == _lines.Length - 1) MarkTutorialCueRead();
             if (++_index < _lines.Length) ShowLine();
-            else Close();
+            else
+            {
+                var completedTutorial = _activeCueCompletesTutorial;
+                Close();
+                if (completedTutorial) TutorialDialogueCompleted = true;
+            }
         }
 
         public void Close()
         {
+            _activeCueCompletesTutorial = false;
+            _activeTutorialLastLine = 0;
             if (_prepareLine != null) StopCoroutine(_prepareLine);
             _prepareLine = null;
             _lines = null;
@@ -133,8 +141,9 @@ namespace _Project.Develop.UI
             UpdateVisibility(disappearDuration, Ease.InOutSine);
         }
 
-        public void SetLocationVisible(bool visible, float duration, Ease ease)
+        public void SetLocationVisible(bool visible, float duration, Ease ease, string location = null)
         {
+            if (location != null) ChangeTutorialLocation(location);
             _locationVisible = visible;
             UpdateVisibility(duration, ease);
         }
@@ -188,8 +197,12 @@ namespace _Project.Develop.UI
             _bus.Resume -= OnResume;
             _bus.EffectApply -= OnEffectApply;
             _bus.EffectRemove -= OnEffectRemove;
-            _bus.PreSceneReset -= Close;
-            _bus.RunReset -= Close;
+            _bus.PreSceneReset -= StopTutorialDialogue;
+            _bus.RunReset -= ResetTutorialDialogue;
+            _bus.SceneReady -= RestartTutorialDialogue;
+            _bus.SpotsFinished -= OnPhotoCleaned;
+            _bus.EndEditing -= OnPhotoFlipped;
+            _bus.ChecklistDown -= OnPhotoCompleted;
         }
     }
 }

@@ -23,6 +23,8 @@ namespace _Project.Develop.UI.Menus
         private bool _requested;
         private int _revision;
 
+        private bool DialogueCompleted => G.Has<DialogueController>() && G.Get<DialogueController>().TutorialDialogueCompleted;
+
         private void Init()
         {
             if (_writer != null) return;
@@ -42,7 +44,7 @@ namespace _Project.Develop.UI.Menus
 
         public void ShowOnce()
         {
-            if (!TutorialSettings.ShouldShow || _shown || _requested) return;
+            if (!DialogueCompleted || !TutorialSettings.ShouldShow || _shown || _requested) return;
             Init();
             _requested = true;
             ShowAsync(_revision).Forget();
@@ -51,7 +53,7 @@ namespace _Project.Develop.UI.Menus
         private async UniTask ShowAsync(int revision)
         {
             var text = await _localizedText.StringReference.GetLocalizedStringAsync();
-            if (this == null || revision != _revision) return;
+            if (this == null || revision != _revision || !DialogueCompleted) return;
 
             if (_fade.isAlive) _fade.Stop();
             _group.alpha = 0f;

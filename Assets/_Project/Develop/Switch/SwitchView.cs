@@ -20,6 +20,27 @@ namespace _Project.Develop.Switch
         private CanvasGroup _group;
         
         private bool _init;
+        private DirectionsData _currentDirections;
+
+        private void LateUpdate()
+        {
+            if (_currentDirections == null || _group == null || !_group.interactable) return;
+            var dialogue = G.Get<DialogueController>();
+            for (var i = 0; i < buttons.Count; i++)
+            {
+                var target = i switch
+                {
+                    0 => _currentDirections.left,
+                    1 => _currentDirections.right,
+                    2 => _currentDirections.bottom,
+                    3 => _currentDirections.up,
+                    4 => _currentDirections.things,
+                    _ => null
+                };
+                buttons[i].interactable = !string.IsNullOrEmpty(target) && dialogue.CanNavigateTo(target) &&
+                    (i < 3 || G.Get<UICurtain>().BothOpen);
+            }
+        }
 
         private void Start()
         {
@@ -70,6 +91,7 @@ namespace _Project.Develop.Switch
         
         private void OnNavigate(InputAction.CallbackContext ctx)
         {
+            if (_group == null || !_group.interactable) return;
             var direction = ctx.ReadValue<Vector2>();
             if (direction.x < 0 && buttons[0].interactable) buttons[0].onClick.Invoke();
             else if (direction.x > 0 && buttons[1].interactable) buttons[1].onClick.Invoke();
@@ -92,7 +114,7 @@ namespace _Project.Develop.Switch
             }
 
             target.UpdateLight(initial: target.Config.key == "Window" || G.Get<UICurtain>().BothOpen).Forget();
-            G.Get<DialogueController>().SetLocationVisible(true, target.TransitionTime, target.TransitionEase);
+            G.Get<DialogueController>().SetLocationVisible(true, target.TransitionTime, target.TransitionEase, target.Config.key);
             if (_init) _ = target.Show();
             else
             {
@@ -107,6 +129,7 @@ namespace _Project.Develop.Switch
         
         private void InteractButtons(DirectionsData directions)
         {
+            _currentDirections = directions;
             if (directions == null)
             {
                 OnPause();

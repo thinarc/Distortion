@@ -14,6 +14,8 @@ namespace _Project.Develop.Switch
         private void MoveTo(string direction)
         {
             if (string.IsNullOrEmpty(direction)) throw new NullReferenceException("Direction is empty");
+            if (G.Has<_Project.Develop.UI.DialogueController>() &&
+                !G.Get<_Project.Develop.UI.DialogueController>().CanNavigateTo(direction)) return;
             _ = _model.GoToLocation(direction);
         }
 

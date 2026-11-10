@@ -26,7 +26,12 @@ namespace _Project.Develop.Editing
         [SerializeField] private TutorialDialog checklistTip;
         [SerializeField] private TutorialDialog photoTip;
 
-        public void ShowChecklistTip() => checklistTip.ShowOnce();
+        public void ShowChecklistTip()
+        {
+            checklistTip.ShowOnce();
+            if (G.Has<_Project.Develop.UI.DialogueController>())
+                G.Get<_Project.Develop.UI.DialogueController>().ShowChecklistDialogue();
+        }
         public void HideChecklistTip() => checklistTip.Hide();
         public void ShowPhotoTip() => photoTip.ShowOnce();
         public void HidePhotoTip() => photoTip.Hide();

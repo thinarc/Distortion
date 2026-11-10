@@ -39,6 +39,8 @@ namespace _Project.Develop.UI.HUD
 
         public bool Showing { get; private set; }
         public bool EmergencyShowing => _showPills;
+        public RectTransform PillsRect => (RectTransform)pillsGroup.transform;
+        public bool PillsVisible => pillsGroup.gameObject.activeInHierarchy && pillsGroup.alpha > 0.01f;
 
         public float Value => _slider.value;
         

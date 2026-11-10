@@ -258,8 +258,9 @@ namespace _Project.Develop.UI.Menus
             var phrase = _dialogText.text;
             _dialogText.text = "";
             
-            _ = Tween.Alpha(dialogGroup, endValue: 1f, duration: 0.4f, ease: Ease.InOutSine);
-            await UniTask.Delay(400);
+            // Use the tutorial dialogue's soft fade and appearance timing.
+            await Tween.Custom(0f, 1f, duration: 0.85f,
+                onValueChange: value => dialogGroup.alpha = Mathf.Pow(value, 1.5f), ease: Ease.InOutSine);
             
             _dialogText.text = "...";
             
